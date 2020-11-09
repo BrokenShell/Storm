@@ -3,8 +3,11 @@
 #### C++17 Header Only Library
 #### Author: Robert Sharp
 ##### © 2020 Robert Sharp, all rights reserved.
+<br>
+<hr>
+<br>
 
-##### File List
+##### Project File List
 - `Storm.hpp` complete core functionality.
 -  `MonkeyTimer.hpp` distribution/timer framework.
 - `StormTests.hpp` test implementation.
