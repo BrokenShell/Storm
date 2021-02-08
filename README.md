@@ -9,7 +9,7 @@
 
 ##### Project File List
 - `Storm.hpp` complete core functionality.
--  `MonkeyTimer.hpp` distribution/timer framework.
+- `MonkeyTimer.hpp` distribution/timer framework.
 - `StormTests.hpp` test implementation.
 - `main.cpp` executes a series of tests.
 - `README.md` this file.
