@@ -116,7 +116,7 @@ auto clamp_tests() -> void {
 auto run_tests() -> void {
   {
     MonkeyTimer::ScopeTimer t("Total Time");
-    MonkeyTimer::print("\nMonkeyTimer\nStorm 3.4.3\n");
+    MonkeyTimer::print("\nMonkeyTimer\nStorm 3.4.4\n");
     MonkeyTimer::print("===========\n\n\n");
     Tests::min_max_tests();
     Tests::bool_tests();
