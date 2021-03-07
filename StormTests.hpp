@@ -26,6 +26,7 @@ auto integer_tests() -> void {
   MonkeyTimer::print("Random Dice \n-----------\n\n");
   MonkeyTimer::distribution_timer("d(10)", Storm::d, 10);
   MonkeyTimer::distribution_timer("dice(3, 6)", Storm::dice, 3, 6);
+  MonkeyTimer::distribution_timer("dice(0, 6)", Storm::dice, 0, 6);
   MonkeyTimer::distribution_timer("ability_dice(4)", Storm::ability_dice, 4);
   MonkeyTimer::print("\n");
 }
