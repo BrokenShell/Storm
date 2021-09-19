@@ -9,9 +9,9 @@
 #include <vector>
 
 namespace Storm {
-    const auto version{"Storm Version 3.5.0"};
+    const auto version{"Storm Version 3.5.1"};
     using Integer = long long;
-    using Float = long double;
+    using Float = double;
 
     namespace Engine {
         using MT_Engine = std::mt19937_64;
