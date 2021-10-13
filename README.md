@@ -11,7 +11,7 @@
 - `Storm.hpp` complete core functionality
   - `GetBool` boolean variant namespace
   - `GetInt` long long variant namespace
-  - `GetFloat` long double variant namespace
+  - `GetFloat` double variant namespace
 - `MonkeyTimer.hpp` distribution/timer framework
 - `StormTests.hpp` test implementation
 - `Utilities.hpp` general utility tools, e.g. `print(...)`
