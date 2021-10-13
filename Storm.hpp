@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace Storm {
-    const auto version{"Storm Version 3.5.1"};
+    const auto version{"Storm Version 3.5.2"};
     using Integer = long long;
     using Float = double;
 

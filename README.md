@@ -1,4 +1,4 @@
-#  Storm v3.5.1
+#  Storm v3.5.2
 ### Random Number Toolkit
 #### C++17 Header Only Library
 #### Author: Robert Sharp
@@ -249,52 +249,52 @@ print(some_list[middle_linear(range_to)])
 
 
 ### Random Floating Point
-`Storm::GetFloat::canonical_variate() -> long double`<br>
+`Storm::GetFloat::canonical_variate() -> double`<br>
 Flat uniform distribution of the range `(0.0, 1.0)`.
 
-`Storm::GetFloat::uniform_real_variate(long double a, long double b) -> long double`<br>
+`Storm::GetFloat::uniform_real_variate(double a, double b) -> double`<br>
 Flat uniform distribution of the range `[a, b)`.
 
-`Storm::GetFloat::exponential_variate(long double lambda_rate) -> long double`<br>
+`Storm::GetFloat::exponential_variate(double lambda_rate) -> double`<br>
 Exponential distribution based on lambda rate.
 
-`Storm::GetFloat::gamma_variate(long double shape, long double scale) -> long double`<br>
+`Storm::GetFloat::gamma_variate(double shape, double scale) -> double`<br>
 Gamma distribution based on shape and scale.
 
-`Storm::GetFloat::weibull_variate(long double shape, long double scale) -> long double`<br>
+`Storm::GetFloat::weibull_variate(double shape, double scale) -> double`<br>
 Weibull distribution based on shape and scale.
 
-`Storm::GetFloat::normal_variate(long double mean, long double std_dev) -> long double`<br>
+`Storm::GetFloat::normal_variate(double mean, double std_dev) -> double`<br>
 Normal or Gaussian distribution based on mean and standard deviation.
 
-`Storm::GetFloat::lognormal_variate(long double log_mean, long double log_deviation) -> long double`<br>
+`Storm::GetFloat::lognormal_variate(double log_mean, double log_deviation) -> double`<br>
 Log Normal distribution based on log mean and log standard deviation.
 
-`Storm::GetFloat::extreme_value_variate(long double location, long double scale) -> long double`<br>
+`Storm::GetFloat::extreme_value_variate(double location, double scale) -> double`<br>
 Extreme value distribution based on location and scale.
 
-`Storm::GetFloat::chi_squared_variate(double degrees_of_freedom) -> long double`<br>
+`Storm::GetFloat::chi_squared_variate(double degrees_of_freedom) -> double`<br>
 Chi squared distribution based on degrees of freedom.
 
-`Storm::GetFloat::cauchy_variate(long double location, long double scale) -> long double`<br>
+`Storm::GetFloat::cauchy_variate(double location, double scale) -> double`<br>
 Cauchy distribution based on location and scale.
 
-`Storm::GetFloat::fisher_f_variate(double degrees_of_freedom_1, double degrees_of_freedom_2) -> long double`<br>
+`Storm::GetFloat::fisher_f_variate(double degrees_of_freedom_1, double degrees_of_freedom_2) -> double`<br>
 Fisher F distribution based on degrees of freedom across two dimensions.
 
-`Storm::GetFloat::student_t_variate(double degrees_of_freedom) -> long double`<br>
+`Storm::GetFloat::student_t_variate(double degrees_of_freedom) -> double`<br>
 Student T distribution based on degrees of freedom.
 
-`Storm::GetFloat::beta_variate(long double alpha, long double beta) -> long double`<br>
+`Storm::GetFloat::beta_variate(double alpha, double beta) -> double`<br>
 Beta distribution based on two inputs alpha and beta.
 
-`Storm::GetFloat::pareto_variate(long double alpha) -> long double`<br>
+`Storm::GetFloat::pareto_variate(double alpha) -> double`<br>
 Pareto distribution based on input alpha.
 
-`Storm::GetFloat::vonmises_variate(long double mu, long double kappa) -> long double`<br>
+`Storm::GetFloat::vonmises_variate(double mu, double kappa) -> double`<br>
 Von Mises distribution based on two inputs: mu and kappa.
 
-`Storm::GetFloat::triangular_variate(long double low, long double high, long double mode) -> long double`<br>
+`Storm::GetFloat::triangular_variate(double low, double high, double mode) -> double`<br>
 Triangular distribution based on low, high and mode.
 
 
@@ -307,7 +307,7 @@ Testbed Info
 
 ```
 MonkeyTimer
-Storm Version 3.5.1
+Storm Version 3.5.2
 ===========
 
 Min/Max Tests 
@@ -321,627 +321,625 @@ Minimum Above:  4.94066e-324
 
 Random Boolean 
 --------------
-percent_true(25.0): 19 nano
-0: 74.88%
-1: 25.12%
+percent_true(25.0): 17 nano
+0: 75.2%
+1: 24.8%
 
-bernoulli_variate(0.25): 22 nano
-0: 74.918%
-1: 25.082%
+bernoulli_variate(0.25): 16 nano
+0: 75.109%
+1: 24.891%
 
 Random Integer 
 --------------
-random_below(10): 47 nano
-0: 9.976%
-1: 10.125%
-2: 9.915%
-3: 9.924%
-4: 10.038%
-5: 9.972%
-6: 9.881%
-7: 9.978%
-8: 9.959%
-9: 10.232%
+random_below(10): 36 nano
+0: 10.002%
+1: 9.877%
+2: 9.897%
+3: 9.965%
+4: 10.142%
+5: 10.098%
+6: 10.178%
+7: 9.847%
+8: 9.975%
+9: 10.019%
 
-uniform_int_variate(0, 9): 44 nano
-0: 9.828%
-1: 10.094%
-2: 9.945%
-3: 9.957%
-4: 10.035%
-5: 10.07%
-6: 10.236%
-7: 9.812%
-8: 10.006%
-9: 10.017%
+uniform_int_variate(0, 9): 32 nano
+0: 9.909%
+1: 9.953%
+2: 10.222%
+3: 9.775%
+4: 10.189%
+5: 9.967%
+6: 10.129%
+7: 10.044%
+8: 9.977%
+9: 9.835%
 
-random_range(0, 20, 2): 65 nano
-0: 10.015%
-2: 10.019%
-4: 9.93%
-6: 9.936%
-8: 10.04%
-10: 9.986%
-12: 9.92%
+random_range(0, 20, 2): 38 nano
+0: 10.084%
+2: 9.982%
+4: 10.147%
+6: 9.889%
+8: 10.07%
+10: 9.795%
+12: 9.947%
 14: 10.087%
-16: 9.923%
-18: 10.144%
+16: 9.91%
+18: 10.089%
 
-random_range(0, 20, -2): 62 nano
-2: 9.924%
-4: 9.833%
-6: 10.049%
-8: 10.099%
-10: 10.08%
+random_range(0, 20, -2): 43 nano
+2: 10.081%
+4: 9.905%
+6: 9.928%
+8: 10.13%
+10: 9.934%
 12: 10.081%
-14: 9.83%
-16: 10.246%
-18: 9.932%
-20: 9.926%
+14: 9.914%
+16: 10.13%
+18: 10.003%
+20: 9.894%
 
-random_range(0, -20, 2): 55 nano
--20: 9.994%
--18: 9.966%
--16: 9.866%
--14: 9.898%
--12: 9.993%
--10: 9.965%
--8: 10.238%
--6: 9.909%
--4: 10.109%
--2: 10.062%
+random_range(0, -20, 2): 39 nano
+-20: 10.067%
+-18: 9.961%
+-16: 9.968%
+-14: 10.194%
+-12: 9.897%
+-10: 9.958%
+-8: 10.113%
+-6: 9.969%
+-4: 9.934%
+-2: 9.939%
 
-random_range(0, -20, -2): 55 nano
--18: 9.946%
--16: 9.93%
--14: 10.028%
--12: 9.839%
--10: 10.199%
--8: 10.018%
--6: 10.052%
--4: 9.95%
--2: 10.034%
-0: 10.004%
+random_range(0, -20, -2): 42 nano
+-18: 9.977%
+-16: 10.066%
+-14: 10.036%
+-12: 9.966%
+-10: 10.117%
+-8: 9.895%
+-6: 10.11%
+-4: 9.974%
+-2: 9.877%
+0: 9.982%
 
-plus_or_minus(10): 33 nano
--10: 4.659%
--9: 4.957%
--8: 4.725%
--7: 4.764%
--6: 4.714%
--5: 4.649%
--4: 4.625%
--3: 4.792%
--2: 4.887%
--1: 4.781%
-0: 4.872%
-1: 4.729%
-2: 4.673%
-3: 4.783%
-4: 4.852%
-5: 4.722%
-6: 4.812%
-7: 4.743%
-8: 4.707%
-9: 4.75%
-10: 4.804%
+plus_or_minus(10): 25 nano
+-10: 4.761%
+-9: 4.711%
+-8: 4.86%
+-7: 4.815%
+-6: 4.845%
+-5: 4.782%
+-4: 4.797%
+-3: 4.789%
+-2: 4.831%
+-1: 4.711%
+0: 4.747%
+1: 4.782%
+2: 4.68%
+3: 4.707%
+4: 4.756%
+5: 4.725%
+6: 4.717%
+7: 4.784%
+8: 4.76%
+9: 4.718%
+10: 4.722%
 
-plus_or_minus_linear(10): 72 nano
--10: 0.862%
--9: 1.64%
--8: 2.489%
--7: 3.239%
--6: 4.108%
--5: 5.054%
--4: 5.809%
--3: 6.655%
--2: 7.268%
--1: 8.282%
-0: 9.224%
-1: 8.177%
-2: 7.444%
-3: 6.494%
-4: 5.804%
-5: 4.938%
-6: 4.157%
-7: 3.376%
-8: 2.467%
-9: 1.674%
-10: 0.839%
+plus_or_minus_linear(10): 50 nano
+-10: 0.821%
+-9: 1.634%
+-8: 2.492%
+-7: 3.39%
+-6: 4.225%
+-5: 4.854%
+-4: 5.801%
+-3: 6.615%
+-2: 7.462%
+-1: 8.149%
+0: 9.094%
+1: 8.23%
+2: 7.335%
+3: 6.624%
+4: 5.904%
+5: 4.935%
+6: 4.159%
+7: 3.264%
+8: 2.482%
+9: 1.688%
+10: 0.842%
 
-plus_or_minus_gauss(10): 65 nano
--10: 0.113%
--9: 0.227%
--8: 0.531%
--7: 1.119%
--6: 2.119%
--5: 3.738%
--4: 5.699%
--3: 8.128%
--2: 10.302%
--1: 11.863%
-0: 12.315%
-1: 11.859%
-2: 10.288%
-3: 8.138%
-4: 5.708%
-5: 3.622%
-6: 2.205%
-7: 1.115%
-8: 0.569%
-9: 0.222%
-10: 0.12%
+plus_or_minus_gauss(10): 57 nano
+-10: 0.093%
+-9: 0.216%
+-8: 0.572%
+-7: 1.113%
+-6: 2.128%
+-5: 3.724%
+-4: 5.701%
+-3: 8.123%
+-2: 10.213%
+-1: 11.846%
+0: 12.49%
+1: 12.004%
+2: 10.268%
+3: 7.967%
+4: 5.67%
+5: 3.681%
+6: 2.218%
+7: 1.114%
+8: 0.546%
+9: 0.239%
+10: 0.074%
 
-binomial_variate(10, 0.5): 91 nano
-0: 0.112%
-1: 0.993%
-2: 4.43%
-3: 11.624%
-4: 20.476%
-5: 24.37%
-6: 20.713%
-7: 11.809%
-8: 4.386%
-9: 0.978%
-10: 0.109%
+binomial_variate(10, 0.5): 86 nano
+0: 0.097%
+1: 0.997%
+2: 4.453%
+3: 11.894%
+4: 20.527%
+5: 24.578%
+6: 20.32%
+7: 11.721%
+8: 4.392%
+9: 0.935%
+10: 0.086%
 
-negative_binomial_variate(5, 0.75): 76 nano
-0: 23.641%
-1: 29.568%
-2: 22.213%
-3: 13.073%
-4: 6.426%
-5: 3.039%
-6: 1.248%
-7: 0.517%
-8: 0.17%
-9: 0.073%
-10: 0.02%
-11: 0.008%
-12: 0.003%
-13: 0.001%
+negative_binomial_variate(5, 0.75): 74 nano
+0: 23.98%
+1: 29.694%
+2: 21.913%
+3: 12.924%
+4: 6.508%
+5: 2.987%
+6: 1.188%
+7: 0.53%
+8: 0.173%
+9: 0.068%
+10: 0.026%
+11: 0.006%
+12: 0.001%
+13: 0.002%
 
-geometric_variate(0.75): 21 nano
-0: 74.952%
-1: 18.773%
-2: 4.701%
-3: 1.151%
-4: 0.314%
-5: 0.084%
-6: 0.017%
-7: 0.005%
-8: 0.002%
-9: 0.001%
+geometric_variate(0.75): 26 nano
+0: 74.985%
+1: 18.928%
+2: 4.498%
+3: 1.192%
+4: 0.301%
+5: 0.067%
+6: 0.024%
+7: 0.004%
+8: 0.001%
 
-poisson_variate(4.0): 70 nano
-0: 1.786%
-1: 7.325%
-2: 14.712%
-3: 19.676%
-4: 19.427%
-5: 15.613%
-6: 10.403%
-7: 5.934%
-8: 2.919%
-9: 1.376%
-10: 0.542%
-11: 0.199%
-12: 0.069%
-13: 0.014%
-14: 0.004%
-16: 0.001%
+poisson_variate(4.0): 84 nano
+0: 1.776%
+1: 7.305%
+2: 14.687%
+3: 19.711%
+4: 19.434%
+5: 15.619%
+6: 10.417%
+7: 5.929%
+8: 2.939%
+9: 1.308%
+10: 0.588%
+11: 0.189%
+12: 0.073%
+13: 0.02%
+14: 0.005%
 
 Random Dice 
 -----------
-d(10): 31 nano
-1: 9.995%
-2: 10.07%
-3: 10.143%
-4: 9.946%
-5: 10.008%
-6: 9.898%
-7: 9.871%
-8: 10.029%
-9: 10.088%
-10: 9.952%
+d(10): 28 nano
+1: 10.037%
+2: 10.137%
+3: 10.083%
+4: 9.935%
+5: 9.937%
+6: 10.004%
+7: 9.925%
+8: 10.024%
+9: 9.986%
+10: 9.932%
 
 dice(3, 6): 79 nano
-3: 0.449%
-4: 1.327%
-5: 2.747%
-6: 4.632%
-7: 7.2%
-8: 9.597%
-9: 11.571%
-10: 12.618%
-11: 12.497%
-12: 11.716%
-13: 9.538%
-14: 6.951%
-15: 4.576%
-16: 2.771%
-17: 1.339%
-18: 0.471%
+3: 0.507%
+4: 1.454%
+5: 2.807%
+6: 4.621%
+7: 6.813%
+8: 9.672%
+9: 11.521%
+10: 12.547%
+11: 12.438%
+12: 11.541%
+13: 9.867%
+14: 6.967%
+15: 4.744%
+16: 2.716%
+17: 1.36%
+18: 0.425%
 
 dice(0, 6): 2 nano
 0: 100%
 
-ability_dice(4): 159 nano
-3: 0.08%
-4: 0.325%
-5: 0.765%
-6: 1.653%
-7: 2.857%
-8: 4.768%
-9: 7.062%
-10: 9.4%
-11: 11.411%
-12: 12.979%
-13: 13.286%
-14: 12.301%
-15: 10.18%
-16: 7.137%
-17: 4.154%
-18: 1.642%
+ability_dice(4): 163 nano
+3: 0.081%
+4: 0.34%
+5: 0.789%
+6: 1.575%
+7: 3.076%
+8: 4.873%
+9: 6.983%
+10: 9.355%
+11: 11.397%
+12: 12.907%
+13: 13.207%
+14: 12.182%
+15: 10.1%
+16: 7.27%
+17: 4.214%
+18: 1.651%
 
 Random Index: ZeroCool 
 ----------------------
 F(N) where N = 10
-random_index(N): 32 nano
-0: 10.068%
-1: 10.156%
-2: 10.149%
-3: 9.871%
-4: 9.908%
-5: 9.95%
-6: 9.937%
-7: 9.895%
-8: 9.983%
-9: 10.083%
+random_index(N): 30 nano
+0: 9.929%
+1: 10.056%
+2: 9.901%
+3: 10.119%
+4: 10.035%
+5: 9.928%
+6: 9.893%
+7: 10.131%
+8: 10.13%
+9: 9.878%
 
-front_linear(N): 15 nano
-0: 19.027%
-1: 17.064%
-2: 14.971%
-3: 13.044%
-4: 11.003%
-5: 8.85%
-6: 7.085%
-7: 5.023%
-8: 2.924%
-9: 1.009%
+front_linear(N): 17 nano
+0: 18.923%
+1: 17.094%
+2: 14.91%
+3: 12.974%
+4: 10.918%
+5: 9.053%
+6: 7.053%
+7: 5.035%
+8: 3.01%
+9: 1.03%
 
-middle_linear(N): 20 nano
-0: 1.995%
-1: 5.997%
-2: 9.989%
-3: 14.046%
-4: 18.075%
-5: 18.096%
-6: 13.689%
-7: 10.092%
-8: 6.061%
-9: 1.96%
+middle_linear(N): 33 nano
+0: 1.985%
+1: 6.084%
+2: 9.844%
+3: 13.984%
+4: 18.155%
+5: 17.945%
+6: 14.09%
+7: 9.956%
+8: 5.988%
+9: 1.969%
 
-back_linear(N): 16 nano
-0: 0.998%
-1: 2.995%
-2: 5.018%
-3: 7.138%
-4: 8.845%
-5: 10.927%
-6: 13.076%
-7: 14.959%
-8: 17.051%
-9: 18.993%
+back_linear(N): 18 nano
+0: 0.996%
+1: 3.006%
+2: 4.969%
+3: 6.897%
+4: 8.954%
+5: 11.105%
+6: 13.012%
+7: 14.988%
+8: 16.867%
+9: 19.206%
 
-quantum_linear(N): 39 nano
-0: 7.316%
-1: 8.598%
-2: 9.973%
-3: 11.329%
-4: 12.681%
-5: 12.62%
-6: 11.444%
-7: 10.048%
-8: 8.621%
-9: 7.37%
+quantum_linear(N): 46 nano
+0: 7.396%
+1: 8.624%
+2: 9.974%
+3: 11.227%
+4: 12.669%
+5: 12.634%
+6: 11.369%
+7: 9.952%
+8: 8.775%
+9: 7.38%
 
-front_gauss(N): 23 nano
-0: 63.486%
-1: 23.164%
-2: 8.367%
-3: 3.116%
-4: 1.151%
-5: 0.474%
-6: 0.146%
-7: 0.069%
-8: 0.025%
-9: 0.002%
+front_gauss(N): 24 nano
+0: 62.978%
+1: 23.298%
+2: 8.8%
+3: 3.144%
+4: 1.133%
+5: 0.414%
+6: 0.141%
+7: 0.066%
+8: 0.018%
+9: 0.008%
 
-middle_gauss(N): 57 nano
-0: 0.001%
-1: 0.133%
-2: 2.097%
-3: 13.629%
-4: 34.034%
-5: 34.225%
-6: 13.616%
-7: 2.107%
-8: 0.156%
+middle_gauss(N): 58 nano
+0: 0.005%
+1: 0.113%
+2: 2.155%
+3: 13.589%
+4: 34.233%
+5: 34.007%
+6: 13.602%
+7: 2.168%
+8: 0.126%
 9: 0.002%
 
 back_gauss(N): 25 nano
-0: 0.008%
-1: 0.026%
-2: 0.059%
-3: 0.163%
-4: 0.423%
-5: 1.172%
-6: 3.081%
-7: 8.54%
-8: 23.432%
-9: 63.096%
+0: 0.01%
+1: 0.023%
+2: 0.054%
+3: 0.15%
+4: 0.389%
+5: 1.153%
+6: 3.067%
+7: 8.528%
+8: 23.194%
+9: 63.432%
 
-quantum_gauss(N): 58 nano
-0: 21.25%
-1: 7.641%
-2: 3.569%
-3: 5.64%
-4: 11.759%
-5: 12.129%
-6: 5.657%
-7: 3.528%
-8: 7.884%
-9: 20.943%
+quantum_gauss(N): 68 nano
+0: 21.085%
+1: 7.815%
+2: 3.646%
+3: 5.637%
+4: 11.769%
+5: 11.849%
+6: 5.6%
+7: 3.492%
+8: 7.799%
+9: 21.308%
 
-front_poisson(N): 57 nano
-0: 8.262%
-1: 20.474%
-2: 25.774%
-3: 21.332%
-4: 13.417%
-5: 6.522%
-6: 2.772%
-7: 1.051%
+front_poisson(N): 65 nano
+0: 8.326%
+1: 20.629%
+2: 25.479%
+3: 21.384%
+4: 13.346%
+5: 6.749%
+6: 2.749%
+7: 0.952%
 8: 0.304%
-9: 0.092%
+9: 0.082%
 
-middle_poisson(N): 79 nano
-0: 4.087%
-1: 10.462%
-2: 13.139%
-3: 12.089%
-4: 9.911%
-5: 10.123%
-6: 12.174%
-7: 13.398%
-8: 10.409%
-9: 4.208%
-
-back_poisson(N): 57 nano
-0: 0.064%
-1: 0.284%
-2: 1.011%
-3: 2.875%
-4: 6.798%
-5: 13.264%
-6: 21.182%
-7: 25.705%
-8: 20.629%
-9: 8.188%
-
-quantum_poisson(N): 88 nano
-0: 4.071%
-1: 10.585%
-2: 13.29%
-3: 12.283%
-4: 9.997%
-5: 10.047%
-6: 11.933%
-7: 13.135%
+middle_poisson(N): 81 nano
+0: 4.15%
+1: 10.4%
+2: 13.375%
+3: 12.033%
+4: 10.151%
+5: 9.979%
+6: 12.023%
+7: 13.246%
 8: 10.465%
-9: 4.194%
+9: 4.178%
+
+back_poisson(N): 59 nano
+0: 0.092%
+1: 0.3%
+2: 1.03%
+3: 2.796%
+4: 6.728%
+5: 13.454%
+6: 21.391%
+7: 25.47%
+8: 20.574%
+9: 8.165%
+
+quantum_poisson(N): 91 nano
+0: 4.046%
+1: 10.454%
+2: 13.413%
+3: 12.068%
+4: 9.888%
+5: 9.966%
+6: 12.058%
+7: 13.483%
+8: 10.45%
+9: 4.174%
 
 quantum_monty(N): 85 nano
-0: 10.667%
-1: 8.895%
-2: 8.809%
-3: 9.762%
-4: 11.663%
-5: 11.647%
-6: 9.721%
-7: 8.901%
-8: 9.17%
-9: 10.765%
+0: 10.931%
+1: 8.997%
+2: 8.852%
+3: 9.655%
+4: 11.456%
+5: 11.483%
+6: 9.86%
+7: 8.903%
+8: 8.813%
+9: 11.05%
 
 F(-N) where N = 10
-random_index(-N): 34 nano
--10: 10.096%
--9: 9.988%
--8: 10.032%
--7: 10.015%
--6: 9.755%
--5: 10.132%
--4: 9.958%
--3: 9.961%
--2: 9.951%
--1: 10.112%
+random_index(-N): 30 nano
+-10: 9.791%
+-9: 10.133%
+-8: 9.808%
+-7: 9.984%
+-6: 10.177%
+-5: 10.115%
+-4: 9.998%
+-3: 10.02%
+-2: 10.147%
+-1: 9.827%
 
-front_linear(-N): 15 nano
--10: 18.936%
--9: 16.846%
--8: 15.19%
--7: 13.031%
--6: 11.026%
--5: 8.936%
--4: 6.982%
--3: 4.985%
--2: 3.074%
--1: 0.994%
+front_linear(-N): 19 nano
+-10: 18.83%
+-9: 16.909%
+-8: 15.127%
+-7: 12.923%
+-6: 11.085%
+-5: 9.061%
+-4: 6.96%
+-3: 5.087%
+-2: 3.027%
+-1: 0.991%
 
-middle_linear(-N): 20 nano
--10: 2.004%
--9: 6.042%
--8: 10.252%
--7: 14.064%
--6: 17.813%
--5: 17.751%
--4: 13.938%
--3: 10.025%
--2: 6.13%
--1: 1.981%
+middle_linear(-N): 21 nano
+-10: 2.04%
+-9: 6.027%
+-8: 10.066%
+-7: 14.128%
+-6: 17.919%
+-5: 17.981%
+-4: 13.911%
+-3: 9.907%
+-2: 6.057%
+-1: 1.964%
 
-back_linear(-N): 16 nano
--10: 0.964%
--9: 2.957%
--8: 4.928%
--7: 6.942%
--6: 9.003%
--5: 11.011%
--4: 13.061%
--3: 15.116%
--2: 17.136%
--1: 18.882%
+back_linear(-N): 18 nano
+-10: 0.967%
+-9: 3.013%
+-8: 4.991%
+-7: 7.056%
+-6: 9.027%
+-5: 10.927%
+-4: 12.951%
+-3: 14.994%
+-2: 16.949%
+-1: 19.125%
 
-quantum_linear(-N): 39 nano
--10: 7.222%
--9: 8.588%
--8: 9.989%
--7: 11.334%
--6: 12.542%
--5: 12.784%
--4: 11.251%
--3: 10.125%
--2: 8.759%
--1: 7.406%
+quantum_linear(-N): 42 nano
+-10: 7.267%
+-9: 8.646%
+-8: 9.986%
+-7: 11.381%
+-6: 12.673%
+-5: 12.728%
+-4: 11.351%
+-3: 9.894%
+-2: 8.688%
+-1: 7.386%
 
-front_gauss(-N): 24 nano
--10: 63.307%
--9: 23.1%
--8: 8.602%
--7: 3.177%
--6: 1.201%
--5: 0.384%
+front_gauss(-N): 26 nano
+-10: 63.202%
+-9: 23.315%
+-8: 8.627%
+-7: 3.019%
+-6: 1.212%
+-5: 0.389%
 -4: 0.146%
--3: 0.049%
--2: 0.025%
--1: 0.009%
+-3: 0.057%
+-2: 0.022%
+-1: 0.011%
 
-middle_gauss(-N): 52 nano
--10: 0.002%
--9: 0.133%
--8: 2.175%
--7: 13.59%
--6: 34.007%
--5: 34.104%
--4: 13.74%
--3: 2.115%
--2: 0.13%
--1: 0.004%
+middle_gauss(-N): 57 nano
+-10: 0.001%
+-9: 0.132%
+-8: 2.135%
+-7: 13.595%
+-6: 34.577%
+-5: 33.682%
+-4: 13.683%
+-3: 2.057%
+-2: 0.137%
+-1: 0.001%
 
-back_gauss(-N): 23 nano
--10: 0.004%
--9: 0.024%
--8: 0.074%
--7: 0.17%
--6: 0.426%
--5: 1.17%
--4: 3.171%
--3: 8.605%
--2: 23.072%
--1: 63.284%
+back_gauss(-N): 26 nano
+-10: 0.009%
+-9: 0.025%
+-8: 0.068%
+-7: 0.152%
+-6: 0.417%
+-5: 1.126%
+-4: 3.143%
+-3: 8.448%
+-2: 23.217%
+-1: 63.395%
 
-quantum_gauss(-N): 55 nano
--10: 21.083%
--9: 7.867%
--8: 3.512%
--7: 5.754%
--6: 11.743%
--5: 11.82%
--4: 5.564%
--3: 3.633%
--2: 7.898%
--1: 21.126%
+quantum_gauss(-N): 58 nano
+-10: 21.121%
+-9: 7.815%
+-8: 3.652%
+-7: 5.599%
+-6: 11.816%
+-5: 11.981%
+-4: 5.576%
+-3: 3.573%
+-2: 7.83%
+-1: 21.037%
 
-front_poisson(-N): 63 nano
--10: 8.222%
--9: 20.369%
--8: 25.991%
--7: 21.286%
--6: 13.196%
--5: 6.835%
--4: 2.737%
--3: 0.958%
--2: 0.323%
--1: 0.083%
+front_poisson(-N): 59 nano
+-10: 8.305%
+-9: 20.389%
+-8: 25.787%
+-7: 21.275%
+-6: 13.289%
+-5: 6.731%
+-4: 2.812%
+-3: 1.008%
+-2: 0.314%
+-1: 0.09%
 
-middle_poisson(-N): 86 nano
--10: 4.2%
--9: 10.346%
--8: 13.346%
--7: 12.166%
--6: 9.957%
--5: 10.052%
--4: 11.968%
--3: 13.268%
--2: 10.55%
--1: 4.147%
+middle_poisson(-N): 80 nano
+-10: 4.156%
+-9: 10.495%
+-8: 13.105%
+-7: 12.043%
+-6: 10.004%
+-5: 10.078%
+-4: 12.123%
+-3: 13.264%
+-2: 10.525%
+-1: 4.207%
 
-back_poisson(-N): 65 nano
--10: 0.074%
--9: 0.369%
--8: 0.967%
--7: 2.861%
--6: 6.583%
--5: 13.452%
--4: 21.333%
--3: 25.559%
--2: 20.512%
--1: 8.29%
+back_poisson(-N): 74 nano
+-10: 0.077%
+-9: 0.315%
+-8: 0.971%
+-7: 2.773%
+-6: 6.668%
+-5: 13.288%
+-4: 21.29%
+-3: 25.833%
+-2: 20.587%
+-1: 8.198%
 
-quantum_poisson(-N): 90 nano
--10: 4.246%
--9: 10.374%
--8: 13.288%
--7: 12.17%
--6: 10.18%
--5: 10.032%
--4: 12.112%
--3: 13.419%
--2: 10.197%
--1: 3.982%
+quantum_poisson(-N): 94 nano
+-10: 4.09%
+-9: 10.364%
+-8: 13.326%
+-7: 12.147%
+-6: 9.968%
+-5: 10.033%
+-4: 12.065%
+-3: 13.45%
+-2: 10.439%
+-1: 4.118%
 
-quantum_monty(-N): 93 nano
--10: 10.993%
--9: 8.838%
--8: 8.923%
--7: 9.671%
--6: 11.537%
--5: 11.562%
--4: 9.648%
--3: 9.008%
--2: 8.873%
--1: 10.947%
+quantum_monty(-N): 91 nano
+-10: 10.784%
+-9: 9.093%
+-8: 8.717%
+-7: 9.854%
+-6: 11.544%
+-5: 11.466%
+-4: 9.746%
+-3: 9.056%
+-2: 8.834%
+-1: 10.906%
 
 Random Float: timer only 
 ------------------------
-canonical_variate(): 14 nano
-uniform_real_variate(1.0, 10.0): 13 nano
+canonical_variate(): 11 nano
+uniform_real_variate(1.0, 10.0): 11 nano
 exponential_variate(1.0): 11 nano
-gamma_variate(1.0, 1.0): 21 nano
-weibull_variate(1.0, 1.0): 11 nano
-normal_variate(5, 2): 31 nano
-lognormal_variate(1.6, 0.25): 34 nano
-extreme_value_variate(0.0, 1.0): 11 nano
+gamma_variate(1.0, 1.0): 20 nano
+weibull_variate(1.0, 1.0): 12 nano
+normal_variate(5, 2): 32 nano
+lognormal_variate(1.6, 0.25): 32 nano
+extreme_value_variate(0.0, 1.0): 12 nano
 chi_squared_variate(1.0): 70 nano
-cauchy_variate(0.0, 0.00005): 12 nano
-fisher_f_variate(1.0, 1.0): 137 nano
-student_t_variate(1.0): 117 nano
-beta_variate(10.0, 1.0): 84 nano
-pareto_variate(5.0): 12 nano
-vonmises_variate(1.0, 1.0): 92 nano
-triangular_variate(0.0, 10.0, 5.0): 11 nano
+cauchy_variate(0.0, 0.00005): 11 nano
+fisher_f_variate(1.0, 1.0): 136 nano
+student_t_variate(1.0): 133 nano
+beta_variate(10.0, 1.0): 92 nano
+pareto_variate(5.0): 11 nano
+vonmises_variate(1.0, 1.0): 101 nano
+triangular_variate(0.0, 10.0, 5.0): 12 nano
 
 Clamp Tests 
 -----------
@@ -949,6 +947,6 @@ clamp(150, 1, 100): 0 nano
 smart_clamp(150, 1, 100): 0 nano
 
 ============================
-Total Time: 0.606731 seconds
+Total Time: 0.598563 seconds
 
 ```
