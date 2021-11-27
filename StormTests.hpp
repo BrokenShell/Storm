@@ -116,8 +116,9 @@ namespace StormTests {
     auto run_tests() -> void {
         {
             MonkeyTimer::ScopeTimer t("Total Time");
-            IO::print("\nMonkeyTimer\n", Storm::version, "\n");
-            IO::print("===========\n\n");
+            IO::print("\nMonkeyTimer");
+            IO::print("\nStorm Version: ", Storm::cpp_version);
+            IO::print("\n===========\n\n");
             StormTests::min_max_tests();
             StormTests::bool_tests();
             StormTests::integer_tests();
