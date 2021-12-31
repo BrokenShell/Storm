@@ -1,21 +1,20 @@
 #pragma once
 
-#include <algorithm>
-#include <cmath>
-#include <functional>
-#include <limits>
-#include <numeric>
 #include <random>
+#include <algorithm>
+#include <numeric>
 #include <vector>
+#include <limits>
 #include <Python.h>
 
 namespace Storm {
-    const auto cpp_version {"3.5.3"};
-    [[maybe_unused]] auto version() {
-        return PyUnicode_FromString(cpp_version);
-    }
     using Integer = long long;
     using Float = double;
+
+    const auto storm_version{"3.5.4"};
+    [[maybe_unused]] auto version() {
+        return PyUnicode_FromString(storm_version);
+    }
 
     namespace Engine {
         using MT_Engine = std::mt19937_64;

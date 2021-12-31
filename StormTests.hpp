@@ -1,12 +1,10 @@
 #pragma once
 
-#include <iomanip>
 #include "Storm.hpp"
 #include "MonkeyTimer.hpp"
 #include "Utilities.hpp"
 
 namespace StormTests {
-
     auto integer_tests() -> void {
         IO::print("Random Integer \n--------------\n");
         MonkeyTimer::distribution_timer("random_below(10)", Storm::GetInt::random_below, 10);
@@ -117,7 +115,7 @@ namespace StormTests {
         {
             MonkeyTimer::ScopeTimer t("Total Time");
             IO::print("\nMonkeyTimer");
-            IO::print("\nStorm Version: ", Storm::cpp_version);
+            IO::print("\nStorm Version: ", Storm::storm_version);
             IO::print("\n===========\n\n");
             StormTests::min_max_tests();
             StormTests::bool_tests();
