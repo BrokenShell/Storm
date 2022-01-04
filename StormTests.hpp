@@ -106,8 +106,11 @@ namespace StormTests {
 
     auto clamp_tests() -> void {
         IO::print("Clamp Tests \n-----------\n");
-        MonkeyTimer::function_timer("clamp(150, 1, 100)", Storm::GearBox::clamp<int>, 150, 1, 100);
-        MonkeyTimer::function_timer("smart_clamp(150, 1, 100)", Storm::GearBox::smart_clamp, 150, 1, 100);
+        MonkeyTimer::function_timer("std::clamp(3, 2, 1)", std::clamp<int>, 3, 2, 1);
+        MonkeyTimer::function_timer("smart_clamp(3, 2, 1)", Storm::GearBox::smart_clamp, 3, 2, 1);
+        Storm::Integer var1 {std::clamp(3, 2, 1)};
+        Storm::Integer var2 {Storm::GearBox::smart_clamp(3, 2, 1)};
+        IO::print(var1, ", ", var2);
         IO::print("\n");
     }
 
