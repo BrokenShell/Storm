@@ -11,17 +11,27 @@ namespace Storm {
     using Integer = long long;
     using Float = double;
 
-    const auto storm_version{"3.5.5"};
-    auto storm_version_py() {
-        return PyUnicode_FromString(storm_version);
-    }
+    struct Version {
+        constexpr const static auto version{"3.6.0"};
+        auto operator()() {
+            return PyUnicode_FromString(Version::version);
+        }
+    };
+    constexpr const static auto version = Storm::Version::version;
 
     namespace Engine {
-        using Typhoon = std::shuffle_order_engine<std::discard_block_engine<std::mt19937_64, 12, 8>, 128>;
-        thread_local Engine::Typhoon Hurricane{std::random_device()()}; // NOLINT(cert-err58-cpp)
+        using Typhoon = std::shuffle_order_engine<std::discard_block_engine<std::mt19937_64, 12, 8>, 256>;
+        thread_local Engine::Typhoon Hurricane { std::random_device()() }; // NOLINT(cert-err58-cpp)
+        auto seed(unsigned long long seed) -> void {
+            thread_local Engine::Typhoon seeded { seed == 0 ? std::random_device()() : seed };
+            Engine::Hurricane = seeded;
+        }
     }
 
     namespace GearBox {
+        auto float_clamp(Storm::Float a, Storm::Float b, Storm::Float c) -> Storm::Float {
+            return std::clamp(a, std::min(b, c), std::max(c, b));
+        }
         auto smart_clamp(Storm::Integer a, Storm::Integer b, Storm::Integer c) -> Storm::Integer {
             return std::clamp(a, std::min(b, c), std::max(c, b));
         }
@@ -43,6 +53,9 @@ namespace Storm {
     }
 
     namespace Meters {
+        auto max_uint() -> unsigned long long {
+            return std::numeric_limits<unsigned long long>::max();
+        }
         auto min_int() -> Storm::Integer {
             return -std::numeric_limits<Storm::Integer>::max();
         }

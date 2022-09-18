@@ -95,6 +95,7 @@ namespace StormTests {
 
     auto min_max_tests() -> void {
         IO::print("Min/Max Tests \n-------------\n");
+        IO::print("Maximum Unsigned Integer: ", Storm::Meters::max_uint(), '\n');
         IO::print("Minimum Integer: ", Storm::Meters::min_int(), '\n');
         IO::print("Maximum Integer:  ", Storm::Meters::max_int(), '\n');
         IO::print("Minimum Float: ", Storm::Meters::min_float(), '\n');
@@ -106,11 +107,19 @@ namespace StormTests {
 
     auto clamp_tests() -> void {
         IO::print("Clamp Tests \n-----------\n");
+
         MonkeyTimer::function_timer("std::clamp(3, 2, 1)", std::clamp<int>, 3, 2, 1);
+        IO::print(std::clamp(3, 2, 1), " should be 2\n");
+
         MonkeyTimer::function_timer("smart_clamp(3, 2, 1)", Storm::GearBox::smart_clamp, 3, 2, 1);
-        Storm::Integer var1 {std::clamp(3, 2, 1)};
-        Storm::Integer var2 {Storm::GearBox::smart_clamp(3, 2, 1)};
-        IO::print(var1, ", ", var2);
+        IO::print(Storm::GearBox::smart_clamp(3, 2, 1), " should be 2\n\n");
+
+        MonkeyTimer::function_timer("float_clamp(1.3, 1.2, 1.1)", Storm::GearBox::float_clamp, 1.3, 1.2, 1.1);
+        IO::print(Storm::GearBox::float_clamp(1.3, 1.2, 1.1), " should be 1.2\n");
+
+        MonkeyTimer::function_timer("std::clamp(1.3, 1.2, 1.1)", std::clamp<float>, 1.3, 1.2, 1.1);
+        IO::print(std::clamp(1.3, 1.2, 1.1), " should be 1.2\n");
+
         IO::print("\n");
     }
 
@@ -118,7 +127,7 @@ namespace StormTests {
         {
             MonkeyTimer::ScopeTimer t("Total Time");
             IO::print("\nMonkeyTimer");
-            IO::print("\nStorm Version: ", Storm::storm_version);
+            IO::print("\nStorm Version: ", Storm::version);
             IO::print("\n===========\n\n");
             StormTests::min_max_tests();
             StormTests::bool_tests();
