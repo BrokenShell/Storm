@@ -127,7 +127,7 @@ namespace StormTests {
         {
             MonkeyTimer::ScopeTimer t("Total Time");
             IO::print("\nMonkeyTimer");
-            IO::print("\nStorm Version: ", Storm::version);
+            IO::print("\nStorm Version: ", Storm::Version::version);
             IO::print("\n===========\n\n");
             StormTests::min_max_tests();
             StormTests::bool_tests();

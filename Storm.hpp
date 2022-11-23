@@ -12,16 +12,15 @@ namespace Storm {
     using Float = double;
 
     struct Version {
-        constexpr const static auto version{"3.6.0"};
-        auto operator()() {
+        constexpr const static auto version{"3.6.1"};
+        auto operator()() -> PyObject* {
             return PyUnicode_FromString(Version::version);
         }
     };
-    constexpr const static auto version = Storm::Version::version;
 
     namespace Engine {
         using Typhoon = std::shuffle_order_engine<std::discard_block_engine<std::mt19937_64, 12, 8>, 256>;
-        thread_local Engine::Typhoon Hurricane { std::random_device()() }; // NOLINT(cert-err58-cpp)
+        thread_local Engine::Typhoon Hurricane { std::random_device()() };
         auto seed(unsigned long long seed) -> void {
             thread_local Engine::Typhoon seeded { seed == 0 ? std::random_device()() : seed };
             Engine::Hurricane = seeded;
@@ -233,7 +232,7 @@ namespace Storm {
             }
             return GearBox::analytic_continuation(GetInt::d, sides, 0);
         }
-        auto dice(Storm::Integer rolls, Storm::Integer sides) -> Storm::Integer {
+        auto dice(Storm::Integer rolls, Storm::Integer sides) -> Storm::Integer { // NOLINT
             if (rolls > 0) {
                 Storm::Integer total{0};
                 for (auto i{0}; i < rolls; ++i) total += d(sides);
