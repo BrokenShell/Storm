@@ -35,7 +35,7 @@ C++ native approach, targeting python developers familiar with the C++ random li
 replacement for the python random library, for those that prefer the python random module API. The Fortuna module 
 combines the features of Pyewacket and RNG. Fortuna also provides a collection of higher-level abstractions for 
 creating custom random generators that can model any distribution across almost any dataset. Fortuna is fully generic 
-and can be used for generating all value types including custom objects. Fortuna supports multi-dimensional data 
+and can be used for generating all value types including custom objects. Fortuna supports multidimensional data 
 structures, nesting abstractions, automatic flattening, lazy evaluation and dependency injection. 
 
 #### Python3 Extensions Based on Storm
@@ -127,7 +127,7 @@ Poisson distribution based on mean.
 
 ### Random Dice
 `Storm::GetInt::d(long long sides) -> long long`<br>
-Represents rolling a uniform multi-sided dice. `d(6)` is a regular six sided die.<br>
+Represents rolling a uniform multi-sided dice. `d(6)` is a regular six-sided die.<br>
 Flat uniform distribution of the range `[1, sides]`.<br>
 By definition, `d(0)` will always return zero.<br>
 Negative input produces the inverse output range. `d(-6) -> [-6, -1]`
@@ -146,7 +146,7 @@ Output will always be in range `[3, 18]`, the mean will increase with higher inp
 ### ZeroCool Specification<br>Functors that produce random indices, specifically for Python3 lists.
 
 ZeroCool Specification: All ZeroCool functors are pure functions with the following signature: `F(N) -> N` they take a 
-long long N and return a random long long in range `[0, N)` and `[N, 0)` for negative N. Each ZeroCool functor models 
+long N and return a random long in range `[0, N)` and `[N, 0)` for negative N. Each ZeroCool functor models 
 a unique distribution.
 
 This specification is defined for the purpose of documenting the proper mapping of input to random output range such 
@@ -156,7 +156,7 @@ or the back for negative n, given |n| is less than or equal to the size of a non
 ZeroCool(0) is undefined: returning a sentinel, zero or negative one or raising an error or throwing an exception are 
 all valid options as zero is a singularity in terms of distribution size. The following ZeroCool functors will return 
 minus one for input zero, but this is not guaranteed or required by the spec. In most cases it simply never matters 
-what a ZeroCool functor returns with zero for input, it could be indicative of an error but not nessesarily.
+what a ZeroCool functor returns with zero for input, it could be indicative of an error but not necessarily.
 
 - #### Flat Uniform
 `Storm::GetInt::random_index(long long) -> long long`: Flat Line<br>
