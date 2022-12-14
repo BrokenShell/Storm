@@ -1,13 +1,30 @@
-#  Storm v3.6.1
+#  Storm v3.6.2
 ### Random Number Toolkit
 #### C++20 Header Only Library
 #### Author: Robert Sharp
 ##### © 2022 Robert Sharp, all rights reserved.
-<br>
-<hr>
-<br>
 
-##### Project File List
+---
+
+## Dev Notes
+
+Storm is intended to provide thread compatible, high-performance tools to make custom random number generators for 
+Python3. Storm does not directly interact with the Python runtime and therefore requires additional tools like Cython 
+to bridge the gap. Storm is optimized for multithread execution on 64bit platforms.
+
+### Warning: Storm is not intended for secure hashing or encryption of any kind!
+That said, Storm is far stronger than the vanilla MT implementation.
+
+For most users, the way to get Storm is to install Fortuna. Fortuna is a Python c-extension based on Storm. It provides 
+a collection of high-level abstractions for creating custom random generators that can model any distribution across 
+almost any dataset. Fortuna is fully generic and can be used for generating all Python value types including custom 
+objects. Fortuna supports multidimensional data structures, nesting abstractions, automatic flattening, lazy evaluation 
+and dependency injection. 
+
+### Fortuna Quick Install
+- `$ pip install Fortuna`
+
+### Storm Project File List
 - `Storm.hpp` complete core functionality
   - `GetBool` boolean variant namespace
   - `GetInt` long long variant namespace
@@ -20,48 +37,43 @@
 - `README.md` this file
 - `LICENSE` free and open for non-commercial use
 
-
-Storm is intended to provide thread compatible, high-performance tools to make custom random number generators for Python3. 
-Storm does not directly interact with the Python runtime and therefore requires additional tools like Cython to bridge the gap. 
-Storm is optimized for multithread execution on 64bit platforms.
-<br><br>
-
-#### Warning: Storm is not intended for secure hashing or encryption of any kind!
-That said, Storm is far stronger than the vanilla MT implementation.<br><br>
-
-
-Fortuna, RNG and Pyewacket are all built on Storm, each with its own set of goals. The RNG package features a 
-C++ native approach, targeting python developers familiar with the C++ random library API. Pyewacket is a drop-in 
-replacement for the python random library, for those that prefer the python random module API. The Fortuna module 
-combines the features of Pyewacket and RNG. Fortuna also provides a collection of higher-level abstractions for 
-creating custom random generators that can model any distribution across almost any dataset. Fortuna is fully generic 
-and can be used for generating all value types including custom objects. Fortuna supports multidimensional data 
-structures, nesting abstractions, automatic flattening, lazy evaluation and dependency injection. 
-
-#### Python3 Extensions Based on Storm
-Quick Install : `$ pip install Fortuna`<br>
-
-#### Distribution Range Notation:
+### Distribution Range Notation:
 - Inclusive Range: `[A, Z]` is the range A to Z including both A and Z.
 - Exclusive Range: `(A, Z)` is the range A to Z excluding both A and Z.
 - Tail Exclusion: `[A, Z)` is the range A to Z excluding Z.
 - Head Exclusion: `(A, Z]` is the range A to Z excluding A.
 
-
 ---
 
-## Core RNG Engine: Hurricane
-`Storm::Engine::Hurricane`, intended for internal use only.<br>
+## Foundation
+
+### Storm::Engine
+- `Strom::Engine::Typhoon Hurricane`, intended for internal use only.<br>
 Storm is powered by The Hurricane Engine, a customizable shuffle-drop configuration of the Mersenne Twister Algorithm. 
 This shuffle-drop strategy makes Hurricane slightly less breakable than vanilla MTA. By default, Hurricane is configured 
 to produce beautiful, hardware-seeded, sudo-random entropy at high-speed across multiple threads in parallel. Hurricane 
 supports hardware entropy when available on the host platform, otherwise it will fall back to the system default.
+- `Storm::Engine::seed(seed_value) -> void`<br>
+Hardware seeding is on by default. This function seeds the random engine. When passed a seed_value other than zero, 
+this function will employ a repeatable software seeding strategy, when passed a seed_value of 0, it will employ an 
+unrepeatable hardware seeding strategy, if available.
 
+---
+
+### Storm::GearBox
+- `Storm::GearBox::clamp(Number a, Number b, Number c) -> Number`<br>
+Clamps target `a` between limits `b` and `c`. Equivalent to median of 3 values.
+- `Storm::GearBox::approximation_clamp(Callable approximation_function, Integer target, Integer upper_bound) -> Integer`<br>
+Clamps target to range(0, upper_bound) by calling approximation_function(upper_limit) if needed.
+- `Storm::GearBox::analytic_continuation(Callable func, Integer input, Integer offset) -> Integer`<br>
+Continues positive-only function to the negative number line with a variable offset.
+
+---
 
 ## Random Generators
 
-### Random Boolean Generator
-`Storm::percent_true(double percent) -> bool`<br>
+### Storm::GetBool
+- `Storm::GetBool::percent_true(double percent) -> bool`<br>
 The input parameter represents the <u>percentage</u> of `true` in the distribution of the output. Input is clamped in 
 range `[0.0, 100.0]`. Input that falls outside this range will saturate the boundaries without error.
 
@@ -77,8 +89,8 @@ int main() {
 }
 ```
 
-### Random Integer Generators
-`Storm::GetInt::random_below(long long number) -> long long`<br>
+### Storm::GetInt
+- `Storm::GetInt::random_below(long long number) -> long long`<br>
 Classic algorithm for generating a random number below a given value.<br>
 Flat uniform distribution of the range `[0, number)`.
 
@@ -93,60 +105,58 @@ int main() {
 }
 ```
 
-`Storm::GetInt::uniform_int_variate(long long a, long long b) -> long long`<br>
+- `Storm::GetInt::uniform_int_variate(long long a, long long b) -> long long`<br>
 Flat uniform integer distribution in the range `[low, high]` where low = min(a, b) and high = max(b, a).
 
-`Storm::GetInt::random_range(long long start, long long stop, long long step) -> long long`<br>
+- `Storm::GetInt::random_range(long long start, long long stop, long long step) -> long long`<br>
 Where `low = min(start, stop)`, `high = max(start, stop)`<br>
 Flat uniform distribution of the range `[low, high) by step`.<br>
 Passing a negative `step` will invert the phase of the output distribution to `(low, high] by step`.<br>
 `random_range(1, 10, 2) -> [1, 10) by 2`, odd numbers 1-9. Same as `random_range(10, 1, 2)`.<br>
 `random_range(1, 10, -2) -> (1, 10] by -2`, even numbers 2-10. Same as `random_range(10, 1, -2)`.
 
-`Storm::GetInt::plus_or_minus(long long number) -> long long`<br>
+- `Storm::GetInt::plus_or_minus(long long number) -> long long`<br>
 Flat uniform distribution in range `[-number, number]`, zero mean.
 
-`Storm::GetInt::plus_or_minus_linear(long long number) -> long long`<br>
+- `Storm::GetInt::plus_or_minus_linear(long long number) -> long long`<br>
 Linear distribution in range `[-number, number]`, zero mean.
 
-`Storm::GetInt::plus_or_minus_gauss(long long number) -> long long`<br>
+- `Storm::GetInt::plus_or_minus_gauss(long long number) -> long long`<br>
 Gaussian distribution in range `[-number, number]`, zero mean.
 
-`Storm::GetInt::binomial_variate(long long number_of_trials, double probability) -> long long`<br>
+- `Storm::GetInt::binomial_variate(long long number_of_trials, double probability) -> long long`<br>
 Binomial distribution based on number of trials and probability.
 
-`Storm::GetInt::negative_binomial_variate(long long number_of_trials, double probability) -> long long`<br>
+- `Storm::GetInt::negative_binomial_variate(long long number_of_trials, double probability) -> long long`<br>
 Negative binomial distribution based on number of trials and probability.
 
-`Storm::GetInt::geometric_variate(double probability) -> long long`<br>
+- `Storm::GetInt::geometric_variate(double probability) -> long long`<br>
 Geometric distribution based on probability.
 
-`Storm::GetInt::poisson_variate(double mean) -> long long`<br>
+- `Storm::GetInt::poisson_variate(double mean) -> long long`<br>
 Poisson distribution based on mean.
 
 
-### Random Dice
-`Storm::GetInt::d(long long sides) -> long long`<br>
+### Dice
+- `Storm::GetInt::d(long long sides) -> long long`<br>
 Represents rolling a uniform multi-sided dice. `d(6)` is a regular six-sided die.<br>
 Flat uniform distribution of the range `[1, sides]`.<br>
 By definition, `d(0)` will always return zero.<br>
 Negative input produces the inverse output range. `d(-6) -> [-6, -1]`
 
-`Storm::GetInt::dice(long long rolls, long long sides) -> long long`<br>
+- `Storm::GetInt::dice(long long rolls, long long sides) -> long long`<br>
 Computes the sum of multiple rolls of a multi-sided dice.<br>
 `dice(3, 6)` is commonly written as 3d6 this is the same as a three six-sided dice rolled separately and added together.
 
-`Storm::GetInt::ability_dice(long long number) -> long long`<br>
+- `Storm::GetInt::ability_dice(long long number) -> long long`<br>
 Input n is clamped in range `[3, 9]`<br>
 Computes the sum of the top three of n `d(6)` rolls, often the input will be 4.<br>
 Geometric distribution based on the number of six-sided dice rolled.<br>
 Output will always be in range `[3, 18]`, the mean will increase with higher input values.
 
-
-### ZeroCool Specification<br>Functors that produce random indices, specifically for Python3 lists.
-
+### ZeroCool Specification
 ZeroCool Specification: All ZeroCool functors are pure functions with the following signature: `F(N) -> N` they take a 
-long N and return a random long in range `[0, N)` and `[N, 0)` for negative N. Each ZeroCool functor models 
+long and return a random long in range `[0, N)` and `[N, 0)` for negative N. Each ZeroCool functor models 
 a unique distribution.
 
 This specification is defined for the purpose of documenting the proper mapping of input to random output range such 
@@ -158,29 +168,29 @@ all valid options as zero is a singularity in terms of distribution size. The fo
 minus one for input zero, but this is not guaranteed or required by the spec. In most cases it simply never matters 
 what a ZeroCool functor returns with zero for input, it could be indicative of an error but not necessarily.
 
-- #### Flat Uniform
-`Storm::GetInt::random_index(long long) -> long long`: Flat Line<br>
+#### Flat Uniform
+- `Storm::GetInt::random_index(long long) -> long long`: Flat Line<br>
 
-- #### Linear Positional
-`Storm::GetInt::front_linear(long long) -> long long`: Left Triangle<br>
-`Storm::GetInt::middle_linear(long long) -> long long` Pyramid<br>
-`Storm::GetInt::back_linear(long long) -> long long`: Right Triangle<br>
-`Storm::GetInt::quantum_linear(long long) -> long long`: Sawtooth, 3 way Monty<br>
+#### Linear Positional
+- `Storm::GetInt::front_linear(long long) -> long long`: Left Triangle<br>
+- `Storm::GetInt::middle_linear(long long) -> long long` Pyramid<br>
+- `Storm::GetInt::back_linear(long long) -> long long`: Right Triangle<br>
+- `Storm::GetInt::quantum_linear(long long) -> long long`: Sawtooth, 3 way Monty<br>
 
-- #### Gaussian Positional
-`Storm::GetInt::front_gauss(long long) -> long long`: Left Gamma<br>
-`Storm::GetInt::middle_gauss(long long) -> long long`: Normal Gauss<br>
-`Storm::GetInt::back_gauss(long long) -> long long`: Right Gamma<br>
-`Storm::GetInt::quantum_gauss(long long) -> long long`: Gamma Wave, 3 way Monty<br>
+#### Gaussian Positional
+- `Storm::GetInt::front_gauss(long long) -> long long`: Left Gamma<br>
+- `Storm::GetInt::middle_gauss(long long) -> long long`: Normal Gauss<br>
+- `Storm::GetInt::back_gauss(long long) -> long long`: Right Gamma<br>
+- `Storm::GetInt::quantum_gauss(long long) -> long long`: Gamma Wave, 3 way Monty<br>
 
-- #### Poisson Positional
-`Storm::GetInt::front_poisson(long long) -> long long`: Left Hill<br>
-`Storm::GetInt::middle_poisson(long long) -> long long`: Twin Peaks<br>
-`Storm::GetInt::back_poisson(long long) -> long long`: Right Hill<br>
-`Storm::GetInt::quantum_poisson(long long) -> long long`: Poisson Wave, 3 way Monty<br>
+#### Poisson Positional
+- `Storm::GetInt::front_poisson(long long) -> long long`: Left Hill<br>
+- `Storm::GetInt::middle_poisson(long long) -> long long`: Twin Peaks<br>
+- `Storm::GetInt::back_poisson(long long) -> long long`: Right Hill<br>
+- `Storm::GetInt::quantum_poisson(long long) -> long long`: Poisson Wave, 3 way Monty<br>
 
-- #### Quantum Monty
-`Storm::GetInt::quantum_monty(long long) -> long long`: 3 by 3 way Monty<br>
+#### Quantum Monty
+- `Storm::GetInt::quantum_monty(long long) -> long long`: 3 by 3 way Monty<br>
 
 ### ZeroCool Python Examples
 
@@ -247,7 +257,7 @@ print(some_list[middle_linear(range_to)])
 ```
 
 
-### Random Floating Point
+### Storm::GetFloat
 `Storm::GetFloat::canonical_variate() -> double`<br>
 Flat uniform distribution of the range `(0.0, 1.0)`.
 
@@ -299,14 +309,12 @@ Triangular distribution based on low, high and mode.
 
 ## Performance and Distribution Tests via MonkeyTimer
 Testbed Info
-- Hardware: Intel Core i9-9880H, 16GB RAM, 1TB SSD
-- Software: macOS Big Sur 11.6.2, MonkeyTimer, Storm
-- Compile  `$ clang++ main.cpp -std=c++20 -O3 -march=native -o stormtests.o`
-- Run Tests: `$ ./stormtests.o`
+- Hardware: 2.3 GHz 8-Core Intel Core i9, 16GB RAM, 1TB SSD
+- Software: macOS Ventura 13.0.1, Python 3.10.8, MonkeyTimer, Storm
 
 ```
 MonkeyTimer
-Storm Version: 3.6.1
+Storm Version: 3.6.3
 ===========
 
 Min/Max Tests 
@@ -321,17 +329,17 @@ Minimum Above:  4.94066e-324
 
 Random Boolean 
 --------------
-percent_true(25.0): 18 nano
+percent_true(25.0): 14 nano
 0: 75.162%
 1: 24.838%
 
-bernoulli_variate(0.25): 16 nano
+bernoulli_variate(0.25): 15 nano
 0: 75.168%
 1: 24.832%
 
 Random Integer 
 --------------
-random_below(10): 37 nano
+random_below(10): 36 nano
 0: 10.173%
 1: 9.931%
 2: 9.89%
@@ -343,7 +351,7 @@ random_below(10): 37 nano
 8: 9.951%
 9: 10.029%
 
-uniform_int_variate(0, 9): 33 nano
+uniform_int_variate(0, 9): 30 nano
 0: 10.02%
 1: 9.978%
 2: 9.99%
@@ -355,7 +363,7 @@ uniform_int_variate(0, 9): 33 nano
 8: 10.063%
 9: 9.992%
 
-random_range(0, 20, 2): 45 nano
+random_range(0, 20, 2): 42 nano
 0: 10.158%
 2: 10.028%
 4: 9.897%
@@ -367,7 +375,7 @@ random_range(0, 20, 2): 45 nano
 16: 9.945%
 18: 10.063%
 
-random_range(0, 20, -2): 48 nano
+random_range(0, 20, -2): 44 nano
 2: 9.926%
 4: 10.11%
 6: 9.974%
@@ -379,7 +387,7 @@ random_range(0, 20, -2): 48 nano
 18: 10.064%
 20: 10.018%
 
-random_range(0, -20, 2): 39 nano
+random_range(0, -20, 2): 38 nano
 -20: 9.917%
 -18: 9.906%
 -16: 10.125%
@@ -391,7 +399,7 @@ random_range(0, -20, 2): 39 nano
 -4: 10.082%
 -2: 10.044%
 
-random_range(0, -20, -2): 49 nano
+random_range(0, -20, -2): 45 nano
 -18: 10.171%
 -16: 9.99%
 -14: 9.95%
@@ -403,7 +411,7 @@ random_range(0, -20, -2): 49 nano
 -2: 9.942%
 0: 9.938%
 
-plus_or_minus(10): 26 nano
+plus_or_minus(10): 28 nano
 -10: 4.706%
 -9: 4.632%
 -8: 4.763%
@@ -426,7 +434,7 @@ plus_or_minus(10): 26 nano
 9: 4.741%
 10: 4.673%
 
-plus_or_minus_linear(10): 54 nano
+plus_or_minus_linear(10): 56 nano
 -10: 0.801%
 -9: 1.647%
 -8: 2.417%
@@ -449,7 +457,7 @@ plus_or_minus_linear(10): 54 nano
 9: 1.686%
 10: 0.824%
 
-plus_or_minus_gauss(10): 68 nano
+plus_or_minus_gauss(10): 60 nano
 -10: 0.097%
 -9: 0.224%
 -8: 0.53%
@@ -472,7 +480,7 @@ plus_or_minus_gauss(10): 68 nano
 9: 0.255%
 10: 0.106%
 
-binomial_variate(10, 0.5): 99 nano
+binomial_variate(10, 0.5): 87 nano
 0: 0.087%
 1: 0.965%
 2: 4.448%
@@ -485,7 +493,7 @@ binomial_variate(10, 0.5): 99 nano
 9: 1.002%
 10: 0.103%
 
-negative_binomial_variate(5, 0.75): 90 nano
+negative_binomial_variate(5, 0.75): 76 nano
 0: 23.602%
 1: 29.672%
 2: 22.244%
@@ -512,7 +520,7 @@ geometric_variate(0.75): 24 nano
 7: 0.007%
 8: 0.001%
 
-poisson_variate(4.0): 77 nano
+poisson_variate(4.0): 72 nano
 0: 1.837%
 1: 7.352%
 2: 14.529%
@@ -531,7 +539,7 @@ poisson_variate(4.0): 77 nano
 
 Random Dice 
 -----------
-d(10): 28 nano
+d(10): 33 nano
 1: 10.217%
 2: 9.996%
 3: 9.982%
@@ -543,7 +551,7 @@ d(10): 28 nano
 9: 9.967%
 10: 9.944%
 
-dice(3, 6): 79 nano
+dice(3, 6): 74 nano
 3: 0.442%
 4: 1.459%
 5: 2.721%
@@ -561,10 +569,10 @@ dice(3, 6): 79 nano
 17: 1.445%
 18: 0.452%
 
-dice(0, 6): 2 nano
+dice(0, 6): 1 nano
 0: 100%
 
-ability_dice(4): 166 nano
+ability_dice(4): 157 nano
 3: 0.077%
 4: 0.311%
 5: 0.727%
@@ -585,7 +593,7 @@ ability_dice(4): 166 nano
 Random Index: ZeroCool 
 ----------------------
 F(N) where N = 10
-random_index(N): 36 nano
+random_index(N): 32 nano
 0: 9.856%
 1: 10.08%
 2: 10.042%
@@ -597,7 +605,7 @@ random_index(N): 36 nano
 8: 10%
 9: 9.939%
 
-front_linear(N): 19 nano
+front_linear(N): 16 nano
 0: 18.9%
 1: 16.896%
 2: 15.003%
@@ -609,7 +617,7 @@ front_linear(N): 19 nano
 8: 2.984%
 9: 1.023%
 
-middle_linear(N): 25 nano
+middle_linear(N): 20 nano
 0: 2.033%
 1: 6.074%
 2: 9.977%
@@ -621,7 +629,7 @@ middle_linear(N): 25 nano
 8: 5.926%
 9: 2.04%
 
-back_linear(N): 18 nano
+back_linear(N): 16 nano
 0: 0.98%
 1: 3.057%
 2: 5.103%
@@ -633,7 +641,7 @@ back_linear(N): 18 nano
 8: 17.016%
 9: 19.081%
 
-quantum_linear(N): 42 nano
+quantum_linear(N): 43 nano
 0: 7.438%
 1: 8.69%
 2: 10.057%
@@ -645,7 +653,7 @@ quantum_linear(N): 42 nano
 8: 8.658%
 9: 7.454%
 
-front_gauss(N): 31 nano
+front_gauss(N): 24 nano
 0: 63.148%
 1: 23.381%
 2: 8.558%
@@ -657,7 +665,7 @@ front_gauss(N): 31 nano
 8: 0.026%
 9: 0.003%
 
-middle_gauss(N): 84 nano
+middle_gauss(N): 61 nano
 0: 0.004%
 1: 0.135%
 2: 2.067%
@@ -681,7 +689,7 @@ back_gauss(N): 26 nano
 8: 23.207%
 9: 63.265%
 
-quantum_gauss(N): 66 nano
+quantum_gauss(N): 78 nano
 0: 20.943%
 1: 7.793%
 2: 3.664%
@@ -693,7 +701,7 @@ quantum_gauss(N): 66 nano
 8: 7.863%
 9: 20.813%
 
-front_poisson(N): 69 nano
+front_poisson(N): 65 nano
 0: 8.146%
 1: 20.593%
 2: 25.858%
@@ -705,7 +713,7 @@ front_poisson(N): 69 nano
 8: 0.354%
 9: 0.105%
 
-middle_poisson(N): 86 nano
+middle_poisson(N): 80 nano
 0: 4.118%
 1: 10.453%
 2: 13.273%
@@ -717,7 +725,7 @@ middle_poisson(N): 86 nano
 8: 10.4%
 9: 4.225%
 
-back_poisson(N): 65 nano
+back_poisson(N): 60 nano
 0: 0.076%
 1: 0.295%
 2: 0.969%
@@ -729,7 +737,7 @@ back_poisson(N): 65 nano
 8: 20.587%
 9: 8.106%
 
-quantum_poisson(N): 103 nano
+quantum_poisson(N): 92 nano
 0: 4.146%
 1: 10.402%
 2: 13.453%
@@ -741,7 +749,7 @@ quantum_poisson(N): 103 nano
 8: 10.391%
 9: 4.193%
 
-quantum_monty(N): 108 nano
+quantum_monty(N): 91 nano
 0: 10.885%
 1: 8.973%
 2: 8.89%
@@ -754,7 +762,7 @@ quantum_monty(N): 108 nano
 9: 10.971%
 
 F(-N) where N = 10
-random_index(-N): 33 nano
+random_index(-N): 32 nano
 -10: 10.015%
 -9: 10.131%
 -8: 10.11%
@@ -778,7 +786,7 @@ front_linear(-N): 17 nano
 -2: 3.02%
 -1: 1.043%
 
-middle_linear(-N): 25 nano
+middle_linear(-N): 22 nano
 -10: 2.021%
 -9: 6.112%
 -8: 9.954%
@@ -790,7 +798,7 @@ middle_linear(-N): 25 nano
 -2: 6.002%
 -1: 2.061%
 
-back_linear(-N): 22 nano
+back_linear(-N): 19 nano
 -10: 0.972%
 -9: 2.985%
 -8: 4.901%
@@ -802,7 +810,7 @@ back_linear(-N): 22 nano
 -2: 17.002%
 -1: 19.168%
 
-quantum_linear(-N): 50 nano
+quantum_linear(-N): 42 nano
 -10: 7.421%
 -9: 8.797%
 -8: 9.965%
@@ -814,7 +822,7 @@ quantum_linear(-N): 50 nano
 -2: 8.637%
 -1: 7.425%
 
-front_gauss(-N): 28 nano
+front_gauss(-N): 29 nano
 -10: 62.952%
 -9: 23.406%
 -8: 8.636%
@@ -838,7 +846,7 @@ middle_gauss(-N): 60 nano
 -2: 0.141%
 -1: 0.002%
 
-back_gauss(-N): 30 nano
+back_gauss(-N): 29 nano
 -10: 0.011%
 -9: 0.021%
 -8: 0.061%
@@ -850,7 +858,7 @@ back_gauss(-N): 30 nano
 -2: 23.314%
 -1: 63.113%
 
-quantum_gauss(-N): 71 nano
+quantum_gauss(-N): 69 nano
 -10: 21.049%
 -9: 7.664%
 -8: 3.636%
@@ -862,7 +870,7 @@ quantum_gauss(-N): 71 nano
 -2: 7.89%
 -1: 21.093%
 
-front_poisson(-N): 64 nano
+front_poisson(-N): 65 nano
 -10: 8.396%
 -9: 20.328%
 -8: 25.557%
@@ -874,7 +882,7 @@ front_poisson(-N): 64 nano
 -2: 0.296%
 -1: 0.072%
 
-middle_poisson(-N): 85 nano
+middle_poisson(-N): 84 nano
 -10: 4.152%
 -9: 10.421%
 -8: 13.234%
@@ -886,7 +894,7 @@ middle_poisson(-N): 85 nano
 -2: 10.275%
 -1: 4.187%
 
-back_poisson(-N): 63 nano
+back_poisson(-N): 64 nano
 -10: 0.098%
 -9: 0.326%
 -8: 1.021%
@@ -898,7 +906,7 @@ back_poisson(-N): 63 nano
 -2: 20.307%
 -1: 8.304%
 
-quantum_poisson(-N): 96 nano
+quantum_poisson(-N): 95 nano
 -10: 4.193%
 -9: 10.345%
 -8: 13.487%
@@ -910,7 +918,7 @@ quantum_poisson(-N): 96 nano
 -2: 10.237%
 -1: 4.105%
 
-quantum_monty(-N): 95 nano
+quantum_monty(-N): 98 nano
 -10: 10.802%
 -9: 8.942%
 -8: 9.136%
@@ -924,35 +932,35 @@ quantum_monty(-N): 95 nano
 
 Random Float: timer only 
 ------------------------
-canonical_variate(): 14 nano
+canonical_variate(): 12 nano
 uniform_real_variate(1.0, 10.0): 13 nano
-exponential_variate(1.0): 13 nano
-gamma_variate(1.0, 1.0): 22 nano
-weibull_variate(1.0, 1.0): 14 nano
-normal_variate(5, 2): 36 nano
+exponential_variate(1.0): 14 nano
+gamma_variate(1.0, 1.0): 21 nano
+weibull_variate(1.0, 1.0): 13 nano
+normal_variate(5, 2): 35 nano
 lognormal_variate(1.6, 0.25): 33 nano
-extreme_value_variate(0.0, 1.0): 13 nano
-chi_squared_variate(1.0): 72 nano
-cauchy_variate(0.0, 0.00005): 18 nano
-fisher_f_variate(1.0, 1.0): 148 nano
-student_t_variate(1.0): 141 nano
-beta_variate(10.0, 1.0): 108 nano
-pareto_variate(5.0): 13 nano
-vonmises_variate(1.0, 1.0): 110 nano
-triangular_variate(0.0, 10.0, 5.0): 15 nano
+extreme_value_variate(0.0, 1.0): 12 nano
+chi_squared_variate(1.0): 71 nano
+cauchy_variate(0.0, 0.00005): 13 nano
+fisher_f_variate(1.0, 1.0): 139 nano
+student_t_variate(1.0): 126 nano
+beta_variate(10.0, 1.0): 93 nano
+pareto_variate(5.0): 12 nano
+vonmises_variate(1.0, 1.0): 97 nano
+triangular_variate(0.0, 10.0, 5.0): 12 nano
 
 Clamp Tests 
 -----------
 std::clamp(3, 2, 1): 0 nano
-1 should be 2
-smart_clamp(3, 2, 1): 0 nano
-2 should be 2
+is 1 should be 2
+clamp(3, 2, 1): 0 nano
+is 2 should be 2
 
-float_clamp(1.3, 1.2, 1.1): 0 nano
-1.2 should be 1.2
 std::clamp(1.3, 1.2, 1.1): 0 nano
-1.1 should be 1.2
+is 1.1 should be 1.2
+clamp(1.3, 1.2, 1.1): 0 nano
+is 1.2 should be 1.2
 
 ============================
-Total Time: 0.644694 seconds
+Total Time: 0.607409 seconds
 ```

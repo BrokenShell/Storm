@@ -8,4 +8,4 @@ namespace IO {
     auto print(Values &&... values) -> void {
         (std::cout << ... << std::forward<Values>(values));
     }
-}  // end namespace IO
+}

@@ -60,7 +60,7 @@ namespace StormTests {
 
     auto random_index_tests() -> void {
         IO::print("Random Index: ZeroCool \n----------------------\n");
-        const int N{10};
+        const auto N{10};
         IO::print("F(N) where N = ", N, "\n");
         MonkeyTimer::distribution_timer("random_index(N)", Storm::GetIndex::random_index, N);
         MonkeyTimer::distribution_timer("front_linear(N)", Storm::GetIndex::front_linear, N);
@@ -107,37 +107,29 @@ namespace StormTests {
 
     auto clamp_tests() -> void {
         IO::print("Clamp Tests \n-----------\n");
-
-        MonkeyTimer::function_timer("std::clamp(3, 2, 1)", std::clamp<int>, 3, 2, 1);
-        IO::print(std::clamp(3, 2, 1), " should be 2\n");
-
-        MonkeyTimer::function_timer("smart_clamp(3, 2, 1)", Storm::GearBox::smart_clamp, 3, 2, 1);
-        IO::print(Storm::GearBox::smart_clamp(3, 2, 1), " should be 2\n\n");
-
-        MonkeyTimer::function_timer("float_clamp(1.3, 1.2, 1.1)", Storm::GearBox::float_clamp, 1.3, 1.2, 1.1);
-        IO::print(Storm::GearBox::float_clamp(1.3, 1.2, 1.1), " should be 1.2\n");
-
-        MonkeyTimer::function_timer("std::clamp(1.3, 1.2, 1.1)", std::clamp<float>, 1.3, 1.2, 1.1);
-        IO::print(std::clamp(1.3, 1.2, 1.1), " should be 1.2\n");
-
+        MonkeyTimer::function_timer("std::clamp(3, 2, 1)", std::clamp<Storm::Integer>, 3, 2, 1);
+        IO::print("is ", std::clamp<Storm::Integer>(3, 2, 1), " should be 2\n");
+        MonkeyTimer::function_timer("clamp(3, 2, 1)", Storm::GearBox::clamp<Storm::Integer>, 3, 2, 1);
+        IO::print("is ", Storm::GearBox::clamp<Storm::Integer>(3, 2, 1), " should be 2\n\n");
+        MonkeyTimer::function_timer("std::clamp(1.3, 1.2, 1.1)", std::clamp<Storm::Float>, 1.3, 1.2, 1.1);
+        IO::print("is ", std::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2\n");
+        MonkeyTimer::function_timer("clamp(1.3, 1.2, 1.1)", Storm::GearBox::clamp<Storm::Float>, 1.3, 1.2, 1.1);
+        IO::print("is ", Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2\n");
         IO::print("\n");
     }
 
     auto run_tests() -> void {
-        {
-            MonkeyTimer::ScopeTimer t("Total Time");
-            IO::print("\nMonkeyTimer");
-            IO::print("\nStorm Version: ", Storm::Version::version);
-            IO::print("\n===========\n\n");
-            StormTests::min_max_tests();
-            StormTests::bool_tests();
-            StormTests::integer_tests();
-            StormTests::random_index_tests();
-            StormTests::float_tests();
-            StormTests::clamp_tests();
-            IO::print("============================\n");
-        }
-        IO::print("\n");
+        MonkeyTimer::ScopeTimer t("Total Time");
+        IO::print("\nMonkeyTimer");
+        IO::print("\nStorm Version: ", Storm::Version::version);
+        IO::print("\n===========\n\n");
+        StormTests::min_max_tests();
+        StormTests::bool_tests();
+        StormTests::integer_tests();
+        StormTests::random_index_tests();
+        StormTests::float_tests();
+        StormTests::clamp_tests();
+        IO::print("============================\n");
     }
 
-} // end namespace
+}
