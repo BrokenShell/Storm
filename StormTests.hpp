@@ -108,20 +108,24 @@ namespace StormTests {
     auto clamp_tests() -> void {
         IO::print("Clamp Tests \n-----------\n");
         MonkeyTimer::function_timer("std::clamp(3, 2, 1)", std::clamp<Storm::Integer>, 3, 2, 1);
-        IO::print("is ", std::clamp<Storm::Integer>(3, 2, 1), " should be 2\n");
+        IO::print("is ", std::clamp<Storm::Integer>(3, 2, 1), " should be 2: ");
+        IO::print(std::clamp<Storm::Float>(3, 2, 1) == 2 ? "Pass" : "Fail", "\n");
         MonkeyTimer::function_timer("clamp(3, 2, 1)", Storm::GearBox::clamp<Storm::Integer>, 3, 2, 1);
-        IO::print("is ", Storm::GearBox::clamp<Storm::Integer>(3, 2, 1), " should be 2\n\n");
+        IO::print("is ", Storm::GearBox::clamp<Storm::Integer>(3, 2, 1), " should be 2: ");
+        IO::print(Storm::GearBox::clamp<Storm::Float>(3, 2, 1) == 2 ? "Pass" : "Fail", "\n\n");
+
         MonkeyTimer::function_timer("std::clamp(1.3, 1.2, 1.1)", std::clamp<Storm::Float>, 1.3, 1.2, 1.1);
-        IO::print("is ", std::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2\n");
+        IO::print("is ", std::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2: ");
+        IO::print(std::clamp<Storm::Float>(1.3, 1.2, 1.1) == 1.2 ? "Pass" : "Fail", "\n");
         MonkeyTimer::function_timer("clamp(1.3, 1.2, 1.1)", Storm::GearBox::clamp<Storm::Float>, 1.3, 1.2, 1.1);
-        IO::print("is ", Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2\n");
-        IO::print("\n");
+        IO::print("is ", Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2: ");
+        IO::print(Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1) == 1.2 ? "Pass" : "Fail", "\n\n");
     }
 
     auto run_tests() -> void {
         MonkeyTimer::ScopeTimer t("Total Time");
         IO::print("\nMonkeyTimer");
-        IO::print("\nStorm Version: ", Storm::Version::version);
+        IO::print("\nStorm Version: ", Storm::version);
         IO::print("\n===========\n\n");
         StormTests::min_max_tests();
         StormTests::bool_tests();

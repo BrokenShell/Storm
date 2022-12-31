@@ -1,8 +1,8 @@
-#  Storm v3.6.4
-### Random Number Toolkit
-#### C++ Header Only Library
-#### Author: Robert Sharp
-##### © 2023 Robert Sharp, all rights reserved.
+# Storm
+## Random Number Engine & Toolkit
+### C++ Header Only Library
+### Author: Robert Sharp
+#### © 2023 Robert Sharp, all rights reserved.
 
 ---
 
@@ -305,11 +305,11 @@ Triangular distribution based on low, high and mode.
 ## Performance and Distribution Tests via MonkeyTimer
 Testbed Info
 - Hardware: 2.3 GHz 8-Core Intel Core i9, 16GB RAM, 1TB SSD
-- Software: macOS Ventura 13.0.1, Python 3.10.8, MonkeyTimer, Storm
+- Software: macOS Ventura 13.1, MonkeyTimer, Storm
 
 ```
 MonkeyTimer
-Storm Version: 3.6.4
+Storm Version: 3.7.0
 ===========
 
 Min/Max Tests 
@@ -324,17 +324,17 @@ Minimum Above:  4.94066e-324
 
 Random Boolean 
 --------------
-percent_true(25.0): 20 nano
+percent_true(25.0): 16 nano
 0: 75.162%
 1: 24.838%
 
-bernoulli_variate(0.25): 19 nano
+bernoulli_variate(0.25): 16 nano
 0: 75.168%
 1: 24.832%
 
 Random Integer 
 --------------
-random_below(10): 44 nano
+random_below(10): 33 nano
 0: 10.173%
 1: 9.931%
 2: 9.89%
@@ -346,7 +346,7 @@ random_below(10): 44 nano
 8: 9.951%
 9: 10.029%
 
-uniform_int_variate(0, 9): 39 nano
+uniform_int_variate(0, 9): 29 nano
 0: 10.02%
 1: 9.978%
 2: 9.99%
@@ -358,7 +358,7 @@ uniform_int_variate(0, 9): 39 nano
 8: 10.063%
 9: 9.992%
 
-random_range(0, 20, 2): 54 nano
+random_range(0, 20, 2): 42 nano
 0: 10.158%
 2: 10.028%
 4: 9.897%
@@ -370,7 +370,7 @@ random_range(0, 20, 2): 54 nano
 16: 9.945%
 18: 10.063%
 
-random_range(0, 20, -2): 59 nano
+random_range(0, 20, -2): 44 nano
 2: 9.926%
 4: 10.11%
 6: 9.974%
@@ -382,7 +382,7 @@ random_range(0, 20, -2): 59 nano
 18: 10.064%
 20: 10.018%
 
-random_range(0, -20, 2): 46 nano
+random_range(0, -20, 2): 42 nano
 -20: 9.917%
 -18: 9.906%
 -16: 10.125%
@@ -394,7 +394,7 @@ random_range(0, -20, 2): 46 nano
 -4: 10.082%
 -2: 10.044%
 
-random_range(0, -20, -2): 51 nano
+random_range(0, -20, -2): 42 nano
 -18: 10.171%
 -16: 9.99%
 -14: 9.95%
@@ -406,7 +406,7 @@ random_range(0, -20, -2): 51 nano
 -2: 9.942%
 0: 9.938%
 
-plus_or_minus(10): 34 nano
+plus_or_minus(10): 26 nano
 -10: 4.706%
 -9: 4.632%
 -8: 4.763%
@@ -429,7 +429,7 @@ plus_or_minus(10): 34 nano
 9: 4.741%
 10: 4.673%
 
-plus_or_minus_linear(10): 61 nano
+plus_or_minus_linear(10): 53 nano
 -10: 0.801%
 -9: 1.647%
 -8: 2.417%
@@ -452,7 +452,7 @@ plus_or_minus_linear(10): 61 nano
 9: 1.686%
 10: 0.824%
 
-plus_or_minus_gauss(10): 69 nano
+plus_or_minus_gauss(10): 60 nano
 -10: 0.097%
 -9: 0.224%
 -8: 0.53%
@@ -475,7 +475,7 @@ plus_or_minus_gauss(10): 69 nano
 9: 0.255%
 10: 0.106%
 
-binomial_variate(10, 0.5): 99 nano
+binomial_variate(10, 0.5): 88 nano
 0: 0.087%
 1: 0.965%
 2: 4.448%
@@ -488,7 +488,7 @@ binomial_variate(10, 0.5): 99 nano
 9: 1.002%
 10: 0.103%
 
-negative_binomial_variate(5, 0.75): 83 nano
+negative_binomial_variate(5, 0.75): 77 nano
 0: 23.602%
 1: 29.672%
 2: 22.244%
@@ -504,7 +504,7 @@ negative_binomial_variate(5, 0.75): 83 nano
 12: 0.003%
 14: 0.001%
 
-geometric_variate(0.75): 25 nano
+geometric_variate(0.75): 23 nano
 0: 74.993%
 1: 18.776%
 2: 4.689%
@@ -515,7 +515,7 @@ geometric_variate(0.75): 25 nano
 7: 0.007%
 8: 0.001%
 
-poisson_variate(4.0): 76 nano
+poisson_variate(4.0): 78 nano
 0: 1.837%
 1: 7.352%
 2: 14.529%
@@ -534,7 +534,7 @@ poisson_variate(4.0): 76 nano
 
 Random Dice 
 -----------
-d(10): 28 nano
+d(10): 27 nano
 1: 10.217%
 2: 9.996%
 3: 9.982%
@@ -546,7 +546,7 @@ d(10): 28 nano
 9: 9.967%
 10: 9.944%
 
-dice(3, 6): 75 nano
+dice(3, 6): 76 nano
 3: 0.442%
 4: 1.459%
 5: 2.721%
@@ -564,7 +564,7 @@ dice(3, 6): 75 nano
 17: 1.445%
 18: 0.452%
 
-dice(0, 6): 2 nano
+dice(0, 6): 1 nano
 0: 100%
 
 ability_dice(4): 151 nano
@@ -588,7 +588,7 @@ ability_dice(4): 151 nano
 Random Index: ZeroCool 
 ----------------------
 F(N) where N = 10
-random_index(N): 31 nano
+random_index(N): 35 nano
 0: 9.856%
 1: 10.08%
 2: 10.042%
@@ -600,7 +600,7 @@ random_index(N): 31 nano
 8: 10%
 9: 9.939%
 
-front_linear(N): 16 nano
+front_linear(N): 17 nano
 0: 18.9%
 1: 16.896%
 2: 15.003%
@@ -612,7 +612,7 @@ front_linear(N): 16 nano
 8: 2.984%
 9: 1.023%
 
-middle_linear(N): 27 nano
+middle_linear(N): 22 nano
 0: 2.033%
 1: 6.074%
 2: 9.977%
@@ -624,7 +624,7 @@ middle_linear(N): 27 nano
 8: 5.926%
 9: 2.04%
 
-back_linear(N): 18 nano
+back_linear(N): 16 nano
 0: 0.98%
 1: 3.057%
 2: 5.103%
@@ -636,7 +636,7 @@ back_linear(N): 18 nano
 8: 17.016%
 9: 19.081%
 
-quantum_linear(N): 41 nano
+quantum_linear(N): 47 nano
 0: 7.438%
 1: 8.69%
 2: 10.057%
@@ -648,7 +648,7 @@ quantum_linear(N): 41 nano
 8: 8.658%
 9: 7.454%
 
-front_gauss(N): 28 nano
+front_gauss(N): 26 nano
 0: 63.148%
 1: 23.381%
 2: 8.558%
@@ -660,7 +660,7 @@ front_gauss(N): 28 nano
 8: 0.026%
 9: 0.003%
 
-middle_gauss(N): 67 nano
+middle_gauss(N): 56 nano
 0: 0.004%
 1: 0.135%
 2: 2.067%
@@ -672,7 +672,7 @@ middle_gauss(N): 67 nano
 8: 0.101%
 9: 0.001%
 
-back_gauss(N): 25 nano
+back_gauss(N): 29 nano
 0: 0.005%
 1: 0.022%
 2: 0.053%
@@ -684,7 +684,7 @@ back_gauss(N): 25 nano
 8: 23.207%
 9: 63.265%
 
-quantum_gauss(N): 67 nano
+quantum_gauss(N): 68 nano
 0: 20.943%
 1: 7.793%
 2: 3.664%
@@ -696,7 +696,7 @@ quantum_gauss(N): 67 nano
 8: 7.863%
 9: 20.813%
 
-front_poisson(N): 70 nano
+front_poisson(N): 75 nano
 0: 8.146%
 1: 20.593%
 2: 25.858%
@@ -708,7 +708,7 @@ front_poisson(N): 70 nano
 8: 0.354%
 9: 0.105%
 
-middle_poisson(N): 90 nano
+middle_poisson(N): 87 nano
 0: 4.118%
 1: 10.453%
 2: 13.273%
@@ -720,7 +720,7 @@ middle_poisson(N): 90 nano
 8: 10.4%
 9: 4.225%
 
-back_poisson(N): 71 nano
+back_poisson(N): 72 nano
 0: 0.076%
 1: 0.295%
 2: 0.969%
@@ -732,7 +732,7 @@ back_poisson(N): 71 nano
 8: 20.587%
 9: 8.106%
 
-quantum_poisson(N): 96 nano
+quantum_poisson(N): 95 nano
 0: 4.146%
 1: 10.402%
 2: 13.453%
@@ -757,7 +757,7 @@ quantum_monty(N): 93 nano
 9: 10.971%
 
 F(-N) where N = 10
-random_index(-N): 33 nano
+random_index(-N): 35 nano
 -10: 10.015%
 -9: 10.131%
 -8: 10.11%
@@ -781,7 +781,7 @@ front_linear(-N): 17 nano
 -2: 3.02%
 -1: 1.043%
 
-middle_linear(-N): 22 nano
+middle_linear(-N): 21 nano
 -10: 2.021%
 -9: 6.112%
 -8: 9.954%
@@ -793,7 +793,7 @@ middle_linear(-N): 22 nano
 -2: 6.002%
 -1: 2.061%
 
-back_linear(-N): 18 nano
+back_linear(-N): 20 nano
 -10: 0.972%
 -9: 2.985%
 -8: 4.901%
@@ -805,7 +805,7 @@ back_linear(-N): 18 nano
 -2: 17.002%
 -1: 19.168%
 
-quantum_linear(-N): 44 nano
+quantum_linear(-N): 45 nano
 -10: 7.421%
 -9: 8.797%
 -8: 9.965%
@@ -841,7 +841,7 @@ middle_gauss(-N): 60 nano
 -2: 0.141%
 -1: 0.002%
 
-back_gauss(-N): 26 nano
+back_gauss(-N): 30 nano
 -10: 0.011%
 -9: 0.021%
 -8: 0.061%
@@ -853,7 +853,7 @@ back_gauss(-N): 26 nano
 -2: 23.314%
 -1: 63.113%
 
-quantum_gauss(-N): 65 nano
+quantum_gauss(-N): 76 nano
 -10: 21.049%
 -9: 7.664%
 -8: 3.636%
@@ -865,7 +865,7 @@ quantum_gauss(-N): 65 nano
 -2: 7.89%
 -1: 21.093%
 
-front_poisson(-N): 69 nano
+front_poisson(-N): 64 nano
 -10: 8.396%
 -9: 20.328%
 -8: 25.557%
@@ -877,7 +877,7 @@ front_poisson(-N): 69 nano
 -2: 0.296%
 -1: 0.072%
 
-middle_poisson(-N): 93 nano
+middle_poisson(-N): 82 nano
 -10: 4.152%
 -9: 10.421%
 -8: 13.234%
@@ -889,7 +889,7 @@ middle_poisson(-N): 93 nano
 -2: 10.275%
 -1: 4.187%
 
-back_poisson(-N): 71 nano
+back_poisson(-N): 63 nano
 -10: 0.098%
 -9: 0.326%
 -8: 1.021%
@@ -901,7 +901,7 @@ back_poisson(-N): 71 nano
 -2: 20.307%
 -1: 8.304%
 
-quantum_poisson(-N): 102 nano
+quantum_poisson(-N): 98 nano
 -10: 4.193%
 -9: 10.345%
 -8: 13.487%
@@ -913,7 +913,7 @@ quantum_poisson(-N): 102 nano
 -2: 10.237%
 -1: 4.105%
 
-quantum_monty(-N): 101 nano
+quantum_monty(-N): 94 nano
 -10: 10.802%
 -9: 8.942%
 -8: 9.136%
@@ -928,21 +928,21 @@ quantum_monty(-N): 101 nano
 Random Float: timer only 
 ------------------------
 canonical_variate(): 13 nano
-uniform_real_variate(1.0, 10.0): 12 nano
-exponential_variate(1.0): 12 nano
-gamma_variate(1.0, 1.0): 22 nano
+uniform_real_variate(1.0, 10.0): 14 nano
+exponential_variate(1.0): 13 nano
+gamma_variate(1.0, 1.0): 21 nano
 weibull_variate(1.0, 1.0): 12 nano
-normal_variate(5, 2): 32 nano
-lognormal_variate(1.6, 0.25): 38 nano
-extreme_value_variate(0.0, 1.0): 12 nano
-chi_squared_variate(1.0): 69 nano
-cauchy_variate(0.0, 0.00005): 12 nano
-fisher_f_variate(1.0, 1.0): 141 nano
-student_t_variate(1.0): 150 nano
-beta_variate(10.0, 1.0): 97 nano
-pareto_variate(5.0): 16 nano
+normal_variate(5, 2): 34 nano
+lognormal_variate(1.6, 0.25): 32 nano
+extreme_value_variate(0.0, 1.0): 13 nano
+chi_squared_variate(1.0): 74 nano
+cauchy_variate(0.0, 0.00005): 15 nano
+fisher_f_variate(1.0, 1.0): 143 nano
+student_t_variate(1.0): 128 nano
+beta_variate(10.0, 1.0): 92 nano
+pareto_variate(5.0): 13 nano
 vonmises_variate(1.0, 1.0): 99 nano
-triangular_variate(0.0, 10.0, 5.0): 12 nano
+triangular_variate(0.0, 10.0, 5.0): 13 nano
 
 Clamp Tests 
 -----------
@@ -957,5 +957,5 @@ clamp(1.3, 1.2, 1.1): 0 nano
 is 1.2 should be 1.2
 
 ============================
-Total Time: 0.644384 seconds
+Total Time: 0.616855 seconds
 ```
