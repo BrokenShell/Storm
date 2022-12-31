@@ -1,8 +1,8 @@
-#  Storm v3.6.2
+#  Storm v3.6.4
 ### Random Number Toolkit
-#### C++20 Header Only Library
+#### C++ Header Only Library
 #### Author: Robert Sharp
-##### © 2022 Robert Sharp, all rights reserved.
+##### © 2023 Robert Sharp, all rights reserved.
 
 ---
 
@@ -13,13 +13,13 @@ Python3. Storm does not directly interact with the Python runtime and therefore 
 to bridge the gap. Storm is optimized for multithread execution on 64bit platforms.
 
 ### Warning: Storm is not intended for secure hashing or encryption of any kind!
-That said, Storm is far stronger than the vanilla MT implementation.
+That said, Storm is far stronger than the vanilla Mersenne Twister implementation.
 
-For most users, the way to get Storm is to install Fortuna. Fortuna is a Python c-extension based on Storm. It provides 
-a collection of high-level abstractions for creating custom random generators that can model any distribution across 
-almost any dataset. Fortuna is fully generic and can be used for generating all Python value types including custom 
-objects. Fortuna supports multidimensional data structures, nesting abstractions, automatic flattening, lazy evaluation 
-and dependency injection. 
+For Python users, the way to get Storm is to install Fortuna. Fortuna is a Python c-extension (Cython wrapper for Storm). 
+Fortuna features a collection of high-level abstractions for creating custom random generators that can model 
+any distribution across any dataset. Fortuna is fully generic and can be used for generating all Python value 
+types including custom objects. Fortuna supports multidimensional distributions, nested abstractions, dynamic 
+flattening, lazy evaluation and dependency injection. 
 
 ### Fortuna Quick Install
 - `$ pip install Fortuna`
@@ -45,7 +45,7 @@ and dependency injection.
 
 ---
 
-## Foundation
+## Storm Library
 
 ### Storm::Engine
 - `Strom::Engine::Typhoon Hurricane`, intended for internal use only.<br>
@@ -78,7 +78,6 @@ The input parameter represents the <u>percentage</u> of `true` in the distributi
 range `[0.0, 100.0]`. Input that falls outside this range will saturate the boundaries without error.
 
 ```cpp
-// percent_true.cpp
 #include <iostream>
 #include "Storm.hpp"
 
@@ -95,7 +94,6 @@ Classic algorithm for generating a random number below a given value.<br>
 Flat uniform distribution of the range `[0, number)`.
 
 ```cpp
-// random_below.cpp
 #include <iostream>
 #include "Storm.hpp"
 
@@ -196,7 +194,6 @@ what a ZeroCool functor returns with zero for input, it could be indicative of a
 
 #### Produce a front linear distribution of the last five values of a list
 ```
-# front_linear.py
 from Fortuna import front_linear
 
 
@@ -216,7 +213,6 @@ print(some_list[front_linear(range_to)])
 
 #### Produce a back linear distribution of the first five values of a list
 ```
-# back_linear.py
 from Fortuna import back_linear
 
 
@@ -236,7 +232,6 @@ print(some_list[back_linear(range_to)])
 
 #### Produce a middle linear distribution of the whole list.
 ```
-# middle_linear.py
 from Fortuna import middle_linear
 
 
@@ -314,7 +309,7 @@ Testbed Info
 
 ```
 MonkeyTimer
-Storm Version: 3.6.3
+Storm Version: 3.6.4
 ===========
 
 Min/Max Tests 
@@ -329,17 +324,17 @@ Minimum Above:  4.94066e-324
 
 Random Boolean 
 --------------
-percent_true(25.0): 14 nano
+percent_true(25.0): 20 nano
 0: 75.162%
 1: 24.838%
 
-bernoulli_variate(0.25): 15 nano
+bernoulli_variate(0.25): 19 nano
 0: 75.168%
 1: 24.832%
 
 Random Integer 
 --------------
-random_below(10): 36 nano
+random_below(10): 44 nano
 0: 10.173%
 1: 9.931%
 2: 9.89%
@@ -351,7 +346,7 @@ random_below(10): 36 nano
 8: 9.951%
 9: 10.029%
 
-uniform_int_variate(0, 9): 30 nano
+uniform_int_variate(0, 9): 39 nano
 0: 10.02%
 1: 9.978%
 2: 9.99%
@@ -363,7 +358,7 @@ uniform_int_variate(0, 9): 30 nano
 8: 10.063%
 9: 9.992%
 
-random_range(0, 20, 2): 42 nano
+random_range(0, 20, 2): 54 nano
 0: 10.158%
 2: 10.028%
 4: 9.897%
@@ -375,7 +370,7 @@ random_range(0, 20, 2): 42 nano
 16: 9.945%
 18: 10.063%
 
-random_range(0, 20, -2): 44 nano
+random_range(0, 20, -2): 59 nano
 2: 9.926%
 4: 10.11%
 6: 9.974%
@@ -387,7 +382,7 @@ random_range(0, 20, -2): 44 nano
 18: 10.064%
 20: 10.018%
 
-random_range(0, -20, 2): 38 nano
+random_range(0, -20, 2): 46 nano
 -20: 9.917%
 -18: 9.906%
 -16: 10.125%
@@ -399,7 +394,7 @@ random_range(0, -20, 2): 38 nano
 -4: 10.082%
 -2: 10.044%
 
-random_range(0, -20, -2): 45 nano
+random_range(0, -20, -2): 51 nano
 -18: 10.171%
 -16: 9.99%
 -14: 9.95%
@@ -411,7 +406,7 @@ random_range(0, -20, -2): 45 nano
 -2: 9.942%
 0: 9.938%
 
-plus_or_minus(10): 28 nano
+plus_or_minus(10): 34 nano
 -10: 4.706%
 -9: 4.632%
 -8: 4.763%
@@ -434,7 +429,7 @@ plus_or_minus(10): 28 nano
 9: 4.741%
 10: 4.673%
 
-plus_or_minus_linear(10): 56 nano
+plus_or_minus_linear(10): 61 nano
 -10: 0.801%
 -9: 1.647%
 -8: 2.417%
@@ -457,7 +452,7 @@ plus_or_minus_linear(10): 56 nano
 9: 1.686%
 10: 0.824%
 
-plus_or_minus_gauss(10): 60 nano
+plus_or_minus_gauss(10): 69 nano
 -10: 0.097%
 -9: 0.224%
 -8: 0.53%
@@ -480,7 +475,7 @@ plus_or_minus_gauss(10): 60 nano
 9: 0.255%
 10: 0.106%
 
-binomial_variate(10, 0.5): 87 nano
+binomial_variate(10, 0.5): 99 nano
 0: 0.087%
 1: 0.965%
 2: 4.448%
@@ -493,7 +488,7 @@ binomial_variate(10, 0.5): 87 nano
 9: 1.002%
 10: 0.103%
 
-negative_binomial_variate(5, 0.75): 76 nano
+negative_binomial_variate(5, 0.75): 83 nano
 0: 23.602%
 1: 29.672%
 2: 22.244%
@@ -509,7 +504,7 @@ negative_binomial_variate(5, 0.75): 76 nano
 12: 0.003%
 14: 0.001%
 
-geometric_variate(0.75): 24 nano
+geometric_variate(0.75): 25 nano
 0: 74.993%
 1: 18.776%
 2: 4.689%
@@ -520,7 +515,7 @@ geometric_variate(0.75): 24 nano
 7: 0.007%
 8: 0.001%
 
-poisson_variate(4.0): 72 nano
+poisson_variate(4.0): 76 nano
 0: 1.837%
 1: 7.352%
 2: 14.529%
@@ -539,7 +534,7 @@ poisson_variate(4.0): 72 nano
 
 Random Dice 
 -----------
-d(10): 33 nano
+d(10): 28 nano
 1: 10.217%
 2: 9.996%
 3: 9.982%
@@ -551,7 +546,7 @@ d(10): 33 nano
 9: 9.967%
 10: 9.944%
 
-dice(3, 6): 74 nano
+dice(3, 6): 75 nano
 3: 0.442%
 4: 1.459%
 5: 2.721%
@@ -569,10 +564,10 @@ dice(3, 6): 74 nano
 17: 1.445%
 18: 0.452%
 
-dice(0, 6): 1 nano
+dice(0, 6): 2 nano
 0: 100%
 
-ability_dice(4): 157 nano
+ability_dice(4): 151 nano
 3: 0.077%
 4: 0.311%
 5: 0.727%
@@ -593,7 +588,7 @@ ability_dice(4): 157 nano
 Random Index: ZeroCool 
 ----------------------
 F(N) where N = 10
-random_index(N): 32 nano
+random_index(N): 31 nano
 0: 9.856%
 1: 10.08%
 2: 10.042%
@@ -617,7 +612,7 @@ front_linear(N): 16 nano
 8: 2.984%
 9: 1.023%
 
-middle_linear(N): 20 nano
+middle_linear(N): 27 nano
 0: 2.033%
 1: 6.074%
 2: 9.977%
@@ -629,7 +624,7 @@ middle_linear(N): 20 nano
 8: 5.926%
 9: 2.04%
 
-back_linear(N): 16 nano
+back_linear(N): 18 nano
 0: 0.98%
 1: 3.057%
 2: 5.103%
@@ -641,7 +636,7 @@ back_linear(N): 16 nano
 8: 17.016%
 9: 19.081%
 
-quantum_linear(N): 43 nano
+quantum_linear(N): 41 nano
 0: 7.438%
 1: 8.69%
 2: 10.057%
@@ -653,7 +648,7 @@ quantum_linear(N): 43 nano
 8: 8.658%
 9: 7.454%
 
-front_gauss(N): 24 nano
+front_gauss(N): 28 nano
 0: 63.148%
 1: 23.381%
 2: 8.558%
@@ -665,7 +660,7 @@ front_gauss(N): 24 nano
 8: 0.026%
 9: 0.003%
 
-middle_gauss(N): 61 nano
+middle_gauss(N): 67 nano
 0: 0.004%
 1: 0.135%
 2: 2.067%
@@ -677,7 +672,7 @@ middle_gauss(N): 61 nano
 8: 0.101%
 9: 0.001%
 
-back_gauss(N): 26 nano
+back_gauss(N): 25 nano
 0: 0.005%
 1: 0.022%
 2: 0.053%
@@ -689,7 +684,7 @@ back_gauss(N): 26 nano
 8: 23.207%
 9: 63.265%
 
-quantum_gauss(N): 78 nano
+quantum_gauss(N): 67 nano
 0: 20.943%
 1: 7.793%
 2: 3.664%
@@ -701,7 +696,7 @@ quantum_gauss(N): 78 nano
 8: 7.863%
 9: 20.813%
 
-front_poisson(N): 65 nano
+front_poisson(N): 70 nano
 0: 8.146%
 1: 20.593%
 2: 25.858%
@@ -713,7 +708,7 @@ front_poisson(N): 65 nano
 8: 0.354%
 9: 0.105%
 
-middle_poisson(N): 80 nano
+middle_poisson(N): 90 nano
 0: 4.118%
 1: 10.453%
 2: 13.273%
@@ -725,7 +720,7 @@ middle_poisson(N): 80 nano
 8: 10.4%
 9: 4.225%
 
-back_poisson(N): 60 nano
+back_poisson(N): 71 nano
 0: 0.076%
 1: 0.295%
 2: 0.969%
@@ -737,7 +732,7 @@ back_poisson(N): 60 nano
 8: 20.587%
 9: 8.106%
 
-quantum_poisson(N): 92 nano
+quantum_poisson(N): 96 nano
 0: 4.146%
 1: 10.402%
 2: 13.453%
@@ -749,7 +744,7 @@ quantum_poisson(N): 92 nano
 8: 10.391%
 9: 4.193%
 
-quantum_monty(N): 91 nano
+quantum_monty(N): 93 nano
 0: 10.885%
 1: 8.973%
 2: 8.89%
@@ -762,7 +757,7 @@ quantum_monty(N): 91 nano
 9: 10.971%
 
 F(-N) where N = 10
-random_index(-N): 32 nano
+random_index(-N): 33 nano
 -10: 10.015%
 -9: 10.131%
 -8: 10.11%
@@ -798,7 +793,7 @@ middle_linear(-N): 22 nano
 -2: 6.002%
 -1: 2.061%
 
-back_linear(-N): 19 nano
+back_linear(-N): 18 nano
 -10: 0.972%
 -9: 2.985%
 -8: 4.901%
@@ -810,7 +805,7 @@ back_linear(-N): 19 nano
 -2: 17.002%
 -1: 19.168%
 
-quantum_linear(-N): 42 nano
+quantum_linear(-N): 44 nano
 -10: 7.421%
 -9: 8.797%
 -8: 9.965%
@@ -822,7 +817,7 @@ quantum_linear(-N): 42 nano
 -2: 8.637%
 -1: 7.425%
 
-front_gauss(-N): 29 nano
+front_gauss(-N): 27 nano
 -10: 62.952%
 -9: 23.406%
 -8: 8.636%
@@ -846,7 +841,7 @@ middle_gauss(-N): 60 nano
 -2: 0.141%
 -1: 0.002%
 
-back_gauss(-N): 29 nano
+back_gauss(-N): 26 nano
 -10: 0.011%
 -9: 0.021%
 -8: 0.061%
@@ -858,7 +853,7 @@ back_gauss(-N): 29 nano
 -2: 23.314%
 -1: 63.113%
 
-quantum_gauss(-N): 69 nano
+quantum_gauss(-N): 65 nano
 -10: 21.049%
 -9: 7.664%
 -8: 3.636%
@@ -870,7 +865,7 @@ quantum_gauss(-N): 69 nano
 -2: 7.89%
 -1: 21.093%
 
-front_poisson(-N): 65 nano
+front_poisson(-N): 69 nano
 -10: 8.396%
 -9: 20.328%
 -8: 25.557%
@@ -882,7 +877,7 @@ front_poisson(-N): 65 nano
 -2: 0.296%
 -1: 0.072%
 
-middle_poisson(-N): 84 nano
+middle_poisson(-N): 93 nano
 -10: 4.152%
 -9: 10.421%
 -8: 13.234%
@@ -894,7 +889,7 @@ middle_poisson(-N): 84 nano
 -2: 10.275%
 -1: 4.187%
 
-back_poisson(-N): 64 nano
+back_poisson(-N): 71 nano
 -10: 0.098%
 -9: 0.326%
 -8: 1.021%
@@ -906,7 +901,7 @@ back_poisson(-N): 64 nano
 -2: 20.307%
 -1: 8.304%
 
-quantum_poisson(-N): 95 nano
+quantum_poisson(-N): 102 nano
 -10: 4.193%
 -9: 10.345%
 -8: 13.487%
@@ -918,7 +913,7 @@ quantum_poisson(-N): 95 nano
 -2: 10.237%
 -1: 4.105%
 
-quantum_monty(-N): 98 nano
+quantum_monty(-N): 101 nano
 -10: 10.802%
 -9: 8.942%
 -8: 9.136%
@@ -932,21 +927,21 @@ quantum_monty(-N): 98 nano
 
 Random Float: timer only 
 ------------------------
-canonical_variate(): 12 nano
-uniform_real_variate(1.0, 10.0): 13 nano
-exponential_variate(1.0): 14 nano
-gamma_variate(1.0, 1.0): 21 nano
-weibull_variate(1.0, 1.0): 13 nano
-normal_variate(5, 2): 35 nano
-lognormal_variate(1.6, 0.25): 33 nano
+canonical_variate(): 13 nano
+uniform_real_variate(1.0, 10.0): 12 nano
+exponential_variate(1.0): 12 nano
+gamma_variate(1.0, 1.0): 22 nano
+weibull_variate(1.0, 1.0): 12 nano
+normal_variate(5, 2): 32 nano
+lognormal_variate(1.6, 0.25): 38 nano
 extreme_value_variate(0.0, 1.0): 12 nano
-chi_squared_variate(1.0): 71 nano
-cauchy_variate(0.0, 0.00005): 13 nano
-fisher_f_variate(1.0, 1.0): 139 nano
-student_t_variate(1.0): 126 nano
-beta_variate(10.0, 1.0): 93 nano
-pareto_variate(5.0): 12 nano
-vonmises_variate(1.0, 1.0): 97 nano
+chi_squared_variate(1.0): 69 nano
+cauchy_variate(0.0, 0.00005): 12 nano
+fisher_f_variate(1.0, 1.0): 141 nano
+student_t_variate(1.0): 150 nano
+beta_variate(10.0, 1.0): 97 nano
+pareto_variate(5.0): 16 nano
+vonmises_variate(1.0, 1.0): 99 nano
 triangular_variate(0.0, 10.0, 5.0): 12 nano
 
 Clamp Tests 
@@ -962,5 +957,5 @@ clamp(1.3, 1.2, 1.1): 0 nano
 is 1.2 should be 1.2
 
 ============================
-Total Time: 0.607409 seconds
+Total Time: 0.644384 seconds
 ```
