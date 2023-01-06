@@ -48,7 +48,7 @@ flattening, lazy evaluation and dependency injection.
 ## Storm Library
 
 ### Storm::Engine
-- `Strom::Engine::Typhoon Hurricane`, intended for internal use only.<br>
+- `Strom::Engine::Hurricane`, intended for internal use only.<br>
 Storm is powered by The Hurricane Engine, a customizable shuffle-drop configuration of the Mersenne Twister Algorithm. 
 This shuffle-drop strategy makes Hurricane slightly less breakable than vanilla MTA. By default, Hurricane is configured 
 to produce beautiful, hardware-seeded, sudo-random entropy at high-speed across multiple threads in parallel. Hurricane 
