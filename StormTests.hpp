@@ -106,19 +106,19 @@ namespace StormTests {
     }
 
     auto clamp_tests() -> void {
-        IO::print("Clamp Tests \n-----------\n");
+        IO::print("Clamp Tests (std::clamp is expected to fail) \n-----------\n");
         MonkeyTimer::function_timer("std::clamp(3, 2, 1)", std::clamp<Storm::Integer>, 3, 2, 1);
-        IO::print("is ", std::clamp<Storm::Integer>(3, 2, 1), " should be 2: ");
+        IO::print("\tis ", std::clamp<Storm::Integer>(3, 2, 1), " should be 2: ");
         IO::print(std::clamp<Storm::Float>(3, 2, 1) == 2 ? "Pass" : "Fail", "\n");
         MonkeyTimer::function_timer("clamp(3, 2, 1)", Storm::GearBox::clamp<Storm::Integer>, 3, 2, 1);
-        IO::print("is ", Storm::GearBox::clamp<Storm::Integer>(3, 2, 1), " should be 2: ");
+        IO::print("\tis ", Storm::GearBox::clamp<Storm::Integer>(3, 2, 1), " should be 2: ");
         IO::print(Storm::GearBox::clamp<Storm::Float>(3, 2, 1) == 2 ? "Pass" : "Fail", "\n\n");
 
         MonkeyTimer::function_timer("std::clamp(1.3, 1.2, 1.1)", std::clamp<Storm::Float>, 1.3, 1.2, 1.1);
-        IO::print("is ", std::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2: ");
+        IO::print("\tis ", std::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2: ");
         IO::print(std::clamp<Storm::Float>(1.3, 1.2, 1.1) == 1.2 ? "Pass" : "Fail", "\n");
         MonkeyTimer::function_timer("clamp(1.3, 1.2, 1.1)", Storm::GearBox::clamp<Storm::Float>, 1.3, 1.2, 1.1);
-        IO::print("is ", Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2: ");
+        IO::print("\tis ", Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1), " should be 1.2: ");
         IO::print(Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1) == 1.2 ? "Pass" : "Fail", "\n\n");
     }
 
