@@ -5,22 +5,23 @@
 #include <numeric>
 #include <vector>
 #include <limits>
-#include <Python.h>
 
 namespace Storm {
     using Integer = long long;
     using Float = double;
 
-    auto version{"3.7.1"};
-    auto py_version() -> PyObject * {
-        return PyUnicode_FromString(Storm::version);
+    const auto version{"3.8.1"};
+    auto get_version() {
+        return Storm::version;
     }
 
     namespace Engine {
-        using Twister = std::discard_block_engine<std::mt19937_64, 12, 8>;
-        using Typhoon = std::shuffle_order_engine<Engine::Twister, 256>;
+        using Twister = std::discard_block_engine<std::mt19937_64, 18, 16>;
+        using Typhoon = std::shuffle_order_engine<Engine::Twister, 128>;
+
         thread_local static std::random_device hardware_seed;
         thread_local static Engine::Typhoon Hurricane{hardware_seed()};
+
         auto seed(unsigned long long seed_value) -> void {
             thread_local Engine::Typhoon seeded{seed_value == 0 ? std::random_device()() : seed_value};
             Engine::Hurricane = seeded;
