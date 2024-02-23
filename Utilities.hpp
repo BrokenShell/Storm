@@ -5,7 +5,7 @@
 
 namespace IO {
     template<typename... Values>
-    auto print(Values &&... values) -> void {
+    auto print(Values&&... values) -> void {
         (std::cout << ... << std::forward<Values>(values));
     }
 }

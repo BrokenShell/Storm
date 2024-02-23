@@ -43,7 +43,7 @@ namespace StormTests {
         MonkeyTimer::function_timer("gamma_variate(1.0, 1.0)", Storm::GetFloat::gamma_variate, 1.0, 1.0);
         MonkeyTimer::function_timer("weibull_variate(1.0, 1.0)", Storm::GetFloat::weibull_variate, 1.0, 1.0);
         MonkeyTimer::function_timer("normal_variate(5, 2)", Storm::GetFloat::normal_variate, 5, 2);
-        MonkeyTimer::function_timer("lognormal_variate(1.6, 0.25)", Storm::GetFloat::lognormal_variate, 1.6, 0.25);
+        MonkeyTimer::function_timer("log_normal_variate(1.6, 0.25)", Storm::GetFloat::log_normal_variate, 1.6, 0.25);
         MonkeyTimer::function_timer("extreme_value_variate(0.0, 1.0)",
                                     Storm::GetFloat::extreme_value_variate, 0.0, 1.0);
         MonkeyTimer::function_timer("chi_squared_variate(1.0)", Storm::GetFloat::chi_squared_variate, 1.0);

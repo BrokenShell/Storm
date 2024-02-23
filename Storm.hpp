@@ -10,7 +10,7 @@ namespace Storm {
     using Integer = long long;
     using Float = double;
 
-    const auto version{"3.8.1"};
+    const auto version{"3.9.0"};
     auto get_version() {
         return Storm::version;
     }
@@ -112,7 +112,7 @@ namespace Storm {
             return distribution(Engine::Hurricane);
         }
 
-        auto lognormal_variate(Storm::Float log_mean, Storm::Float log_deviation) -> Storm::Float {
+        auto log_normal_variate(Storm::Float log_mean, Storm::Float log_deviation) -> Storm::Float {
             std::lognormal_distribution<Storm::Float> distribution{log_mean, log_deviation};
             return distribution(Engine::Hurricane);
         }
