@@ -8,14 +8,13 @@
 
 ## Dev Notes
 
-Storm is intended to provide thread compatible, high-performance tools to make custom random number generators for 
-Python3. Storm does not directly interact with the Python runtime and therefore requires additional tools like Cython 
-to bridge the gap. Storm is optimized for multithread execution on 64bit platforms.
+Storm is intended to provide thread compatible, high-performance tools to make custom random number generators. 
+Storm is optimized for multithread execution on 64bit platforms.
 
 ### Warning: Storm is not intended for secure hashing or encryption of any kind!
 That said, Storm is far stronger than the vanilla Mersenne Twister implementation.
 
-For Python users, the way to get Storm is to install Fortuna. Fortuna is a Python c-extension (Cython wrapper for Storm). 
+For Python users, the way to get Storm is to install Fortuna. Fortuna is a Python c-extension that includes Storm. 
 Fortuna features a collection of high-level abstractions for creating custom random generators that can model 
 any distribution across any dataset. Fortuna is fully generic and can be used for generating all Python value 
 types including custom objects. Fortuna supports multidimensional distributions, nested abstractions, dynamic 
@@ -35,7 +34,7 @@ flattening, lazy evaluation and dependency injection.
 - `Utilities.hpp` general utility tools, e.g. `print(...)`
 - `main.cpp` executes a series of distribution and performance tests
 - `README.md` this file
-- `LICENSE` free and open for non-commercial use
+- `LICENSE` free and open for non-commercial use, other licenses available
 
 ### Distribution Range Notation:
 - Inclusive Range: `[A, Z]` is the range A to Z including both A and Z.
@@ -188,7 +187,7 @@ what a ZeroCool functor returns with zero for input, it could be indicative of a
 - `Storm::GetInt::quantum_poisson(long long) -> long long`: Poisson Wave, 3 way Monty<br>
 
 #### Quantum Monty
-- `Storm::GetInt::quantum_monty(long long) -> long long`: 3 by 3 way Monty<br>
+- `Storm::GetInt::quantum_monty(long long) -> long long`: 9 way Monty<br>
 
 ### ZeroCool Python Examples
 
