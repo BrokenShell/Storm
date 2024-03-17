@@ -11,7 +11,7 @@ namespace Storm {
     using Integer = long long;
     using UnsignedInteger = unsigned long long;
 
-    const auto version{"3.9.3"};
+    const auto version{"3.9.4"};
     auto get_version() {
         return Storm::version;
     }
@@ -216,6 +216,11 @@ namespace Storm {
     }
 
     namespace GetInt {
+        auto uniform_uint_variate(Storm::UnsignedInteger lo, Storm::UnsignedInteger hi) -> Storm::UnsignedInteger {
+            std::uniform_int_distribution<Storm::UnsignedInteger> distribution{std::min(lo, hi), std::max(hi, lo)};
+            return distribution(Engine::Hurricane);
+        }
+
         auto uniform_int_variate(Storm::Integer lo, Storm::Integer hi) -> Storm::Integer {
             std::uniform_int_distribution<Storm::Integer> distribution{std::min(lo, hi), std::max(hi, lo)};
             return distribution(Engine::Hurricane);

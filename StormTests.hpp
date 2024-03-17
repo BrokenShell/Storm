@@ -9,6 +9,7 @@ namespace StormTests {
         IO::print("Random Integer \n--------------\n");
         MonkeyTimer::distribution_timer("random_below(10)", Storm::GetInt::random_below, 10);
         MonkeyTimer::distribution_timer("uniform_int_variate(0, 9)", Storm::GetInt::uniform_int_variate, 0, 9);
+        MonkeyTimer::distribution_timer("uniform_uint_variate(0, 9)", Storm::GetInt::uniform_uint_variate, 0, 9);
         MonkeyTimer::distribution_timer("random_range(0, 20, 2)", Storm::GetInt::random_range, 0, 20, 2);
         MonkeyTimer::distribution_timer("random_range(0, 20, -2)", Storm::GetInt::random_range, 0, 20, -2);
         MonkeyTimer::distribution_timer("random_range(0, -20, 2)", Storm::GetInt::random_range, 0, -20, 2);
