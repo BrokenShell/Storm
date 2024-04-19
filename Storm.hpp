@@ -11,7 +11,7 @@ namespace Storm {
     using Integer = long long;
     using UnsignedInteger = unsigned long long;
 
-    const auto version{"3.9.4"};
+    const auto version{"3.9.5"};
     auto get_version() {
         return Storm::version;
     }
@@ -288,8 +288,8 @@ namespace Storm {
             }
         }
 
-        auto ability_dice(size_t number) -> Storm::Integer {
-            const size_t num{std::clamp<size_t>(number, 3, 9)};
+        auto ability_dice(Storm::Integer number) -> Storm::Integer {
+            const int num{std::clamp<int>(int(number), 3, 9)};
             if (num == 3) return GetInt::dice(3, 6);
             std::vector<Storm::Integer> the_rolls(num);
             std::generate_n(the_rolls.begin(), num, []() {
