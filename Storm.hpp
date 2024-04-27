@@ -5,13 +5,14 @@
 #include <numeric>
 #include <vector>
 #include <limits>
+#include <functional>
 
 namespace Storm {
     using Float = double;
     using Integer = long long;
     using UnsignedInteger = unsigned long long;
 
-    const auto version{"3.9.5"};
+    const auto version{"3.9.6"};
     auto get_version() {
         return Storm::version;
     }
