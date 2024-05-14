@@ -13,7 +13,7 @@ namespace Storm {
     using Unsigned = unsigned long long;
 
     constexpr auto version{"4.0.1"};
-    constexpr auto get_version() noexcept-> const char* {
+    constexpr auto get_version() noexcept -> const char* {
         return Storm::version;
     }
 
