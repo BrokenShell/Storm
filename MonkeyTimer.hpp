@@ -44,6 +44,7 @@ namespace MonkeyTimer {
     auto distribution_timer(const char* label, Function&& func, Args&&... args) -> void {
         const size_t cycles = 100000;
         std::map<decltype(func(std::forward<Args>(args)...)), int64_t> history;
+        function_timer(label, std::forward<Function>(func), std::forward<Args>(args)...);
         try {
             for (size_t i = 0; i < cycles; ++i) {
                 auto result = std::invoke(std::forward<Function>(func), std::forward<Args>(args)...);
@@ -57,6 +58,5 @@ namespace MonkeyTimer {
             IO::print(key, ": ", static_cast<double>(val) / cycles * 100.0, "%\n");
         }
         IO::print('\n');
-        function_timer(label, std::forward<Function>(func), std::forward<Args>(args)...);
     }
 }

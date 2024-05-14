@@ -5,7 +5,7 @@ extern "C" {
         return Storm::get_version();
     }
 
-    Storm::UnsignedInteger max_uint() {
+    Storm::Unsigned max_uint() {
         return Storm::Meters::max_uint();
     }
 
@@ -105,7 +105,7 @@ extern "C" {
         return Storm::GetBool::percent_true(truth_factor);
     }
 
-    Storm::UnsignedInteger uniform_uint_variate(Storm::UnsignedInteger lo, Storm::UnsignedInteger hi) {
+    Storm::Unsigned uniform_uint_variate(Storm::Unsigned lo, Storm::Unsigned hi) {
         return Storm::GetInt::uniform_uint_variate(lo, hi);
     }
 
