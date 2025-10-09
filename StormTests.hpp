@@ -5,7 +5,7 @@
 #include "Utilities.hpp"
 
 namespace StormTests {
-    auto integer_tests() -> void {
+    inline auto integer_tests() -> void {
         IO::print("Random Integer \n--------------\n");
         MonkeyTimer::distribution_timer("random_below(10)", Storm::GetInt::random_below, 10);
         MonkeyTimer::distribution_timer("uniform_int_variate(0, 9)", Storm::GetInt::uniform_int_variate, 0, 9);
@@ -29,13 +29,13 @@ namespace StormTests {
         MonkeyTimer::distribution_timer("ability_dice(4)", Storm::GetInt::ability_dice, 4);
     }
 
-    auto bool_tests() -> void {
+    inline auto bool_tests() -> void {
         IO::print("Random Boolean \n--------------\n");
         MonkeyTimer::distribution_timer("percent_true(25.0)", Storm::GetBool::percent_true, 25.0);
         MonkeyTimer::distribution_timer("bernoulli_variate(0.25)", Storm::GetBool::bernoulli_variate, 0.25);
     }
 
-    auto float_tests() -> void {
+    inline auto float_tests() -> void {
         IO::print("Random Float: timer only \n------------------------\n");
         MonkeyTimer::function_timer("canonical_variate()", Storm::GetFloat::canonical_variate);
         MonkeyTimer::function_timer("uniform_real_variate(1.0, 10.0)",
@@ -59,9 +59,9 @@ namespace StormTests {
         IO::print("\n");
     }
 
-    auto random_index_tests() -> void {
+    inline auto random_index_tests() -> void {
         IO::print("Random Index: ZeroCool \n----------------------\n");
-        const auto N{10};
+        constexpr auto N{10};
         IO::print("F(N) where N = ", N, "\n");
         MonkeyTimer::distribution_timer("random_index(N)", Storm::GetIndex::random_index, N);
         MonkeyTimer::distribution_timer("front_linear(N)", Storm::GetIndex::front_linear, N);
@@ -94,7 +94,7 @@ namespace StormTests {
         MonkeyTimer::distribution_timer("quantum_monty(-N)", Storm::GetIndex::quantum_monty, -N);
     }
 
-    auto min_max_tests() -> void {
+    inline auto min_max_tests() -> void {
         IO::print("Min/Max Tests \n-------------\n");
         IO::print("Maximum Unsigned Integer: ", Storm::Meters::max_uint(), '\n');
         IO::print("Minimum Integer: ", Storm::Meters::min_int(), '\n');
@@ -106,7 +106,7 @@ namespace StormTests {
         IO::print("\n");
     }
 
-    auto clamp_tests() -> void {
+    inline auto clamp_tests() -> void {
         IO::print("Clamp Tests (std::clamp is expected to fail) \n-----------\n");
         MonkeyTimer::function_timer("std::clamp(3, 2, 1)", std::clamp<Storm::Integer>, 3, 2, 1);
         IO::print("\tis ", std::clamp<Storm::Integer>(3, 2, 1), " should be 2: ");
@@ -123,7 +123,7 @@ namespace StormTests {
         IO::print(Storm::GearBox::clamp<Storm::Float>(1.3, 1.2, 1.1) == 1.2 ? "Pass" : "Fail", "\n\n");
     }
 
-    auto run_tests() -> void {
+    inline auto run_tests() -> void {
         MonkeyTimer::ScopeTimer t("Total Time");
         IO::print("\nMonkeyTimer");
         IO::print("\nStorm Version: ", Storm::version);

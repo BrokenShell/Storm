@@ -6,34 +6,33 @@
 #include "Utilities.hpp"
 
 namespace MonkeyTimer {
-    const auto version{"1.1.0"};
+    const auto version{"1.1.1"};
 
     struct ScopeTimer {
         std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
         const char* label;
         size_t cycles;
 
-        explicit ScopeTimer(const char* label, size_t cycles = 1) : label(label), cycles(cycles) {
+        explicit ScopeTimer(const char* label, const size_t cycles = 1) : label(label), cycles(cycles) {
             start = std::chrono::high_resolution_clock::now();
         }
 
         ~ScopeTimer() {
             end = std::chrono::high_resolution_clock::now();
-            auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-            double averageDuration = static_cast<double>(duration) / cycles;
+            const auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
-            if (averageDuration < 1000000) {
+            if (auto averageDuration = duration / cycles; averageDuration < 1'000'000) {
                 IO::print(label, ": ", averageDuration, " nano\n");
             } else {
-                double sec = averageDuration / 1000000000.0;
-                IO::print(label, ": ", sec, " seconds\n");
+                const auto seconds = static_cast<double>(duration) / (static_cast<double>(cycles) * 1'000'000'000.0);
+                IO::print(label, ": ", seconds, " seconds\n");
             }
         }
     };
 
     template<typename Function, typename... Args>
     auto function_timer(const char* label, Function&& func, Args&&... args) -> void {
-        const size_t cycles = 100000;
+        constexpr size_t cycles = 100000;
         ScopeTimer t(label, cycles);
         for (size_t i = 0; i < cycles; ++i) {
             std::invoke(std::forward<Function>(func), std::forward<Args>(args)...);
@@ -42,7 +41,7 @@ namespace MonkeyTimer {
 
     template<typename Function, typename... Args>
     auto distribution_timer(const char* label, Function&& func, Args&&... args) -> void {
-        const size_t cycles = 100000;
+        constexpr size_t cycles = 100000;
         std::map<decltype(func(std::forward<Args>(args)...)), int64_t> history;
         function_timer(label, std::forward<Function>(func), std::forward<Args>(args)...);
         try {
