@@ -5,9 +5,6 @@ Storm 5 is a clean break. It does not provide a deprecated facade, a
 Applications should migrate intentionally instead of replacing the old header
 in place.
 
-This document is also the handoff record for the Fortuna agent team. Storm 5
-does not modify Fortuna.
-
 ## Release-level changes
 
 | Storm 4 | Storm 5 |
@@ -72,8 +69,8 @@ adapting old argument conventions.
 
 Negative `random_below`, signed dice, signed ZeroCool indices, and the old
 order-independent range phase have no direct compatibility mode. Preserve
-them at the Fortuna/application layer only when they are intentional product
-behavior, using checked arithmetic and explicit tests.
+them at the application layer only when they are intentional product behavior,
+using checked arithmetic and explicit tests.
 
 ## Removed operations that map to `<random>`
 
@@ -127,10 +124,10 @@ a blessed replacement:
 - `GearBox::clamp`, `approximation_clamp`, and `analytic_continuation`
 
 The old distribution-like and positional names described historical custom
-recipes, not canonical mathematical distributions. Reimplement a recipe in
-Fortuna or the application only when a current product requirement justifies
-it. Give the replacement a precise name, accept an injected engine, document
-its support and error contract, and add deterministic domain/statistical tests.
+recipes, not canonical mathematical distributions. Reimplement a recipe at
+the application layer only when a current product requirement justifies it.
+Give the replacement a precise name, accept an injected engine, document its
+support and error contract, and add deterministic domain/statistical tests.
 
 For removed `Meters` accessors, use standard facilities directly:
 
@@ -172,38 +169,3 @@ Adopters must update code, docs, and tests for all of these differences:
 Do not use exact standard-distribution samples as cross-toolchain golden
 vectors. Storm promises exact major-v5 stability only for its own bounded
 integer/index algorithms with the same engine state and arguments.
-
-## Fortuna handoff record
-
-The following facts were audited before Storm 5.0.0:
-
-- Fortuna vendors Storm 4.0.4.
-- Its `cdef extern from "Storm.hpp"` surface contains 57 Cython declarations.
-- All 57 declarations lack `except +`.
-- `fortuna_extras/multi_threading.py` uses `multiprocessing.Pool`, not real
-  threads, so it does not test Storm 5 TLS isolation.
-- Existing Fortuna seed/thread documentation does not describe Storm 5's
-  current-thread-only TLS contract.
-
-The Fortuna team should migrate in this order:
-
-1. Inventory which of the 57 declarations Fortuna still needs and select a
-   mapping or intentional application-layer replacement from this document.
-2. Add Cython C++ exception translation (`except +`, plus any required return
-   type adjustments) before adopting any throwing Storm 5 declaration.
-3. Validate that binding change while Fortuna still vendors Storm 4.0.4.
-4. Replace the include path and declarations with only the chosen Storm 5
-   surface.
-5. Update Python behavior, tests, and docs for deterministic seed zero, true
-   `min_int`, zero index, zero-trial binomial, domain validation, NaN/infinity,
-   full signed boundaries, canonical `[0,1)`, and changed dice/range/index
-   semantics.
-6. Preserve old dice, order-independent `random_range`, signed ZeroCool, or
-   custom recipe behavior only by explicit product decision and with new
-   Fortuna-layer tests.
-7. Add real thread tests for TLS isolation and current-thread-only seeding.
-8. Correct entropy documentation: `random_device` is implementation-defined
-   and Storm remains non-cryptographic.
-
-This is a broad Python-visible source and behavior break. The likely honest
-release vehicle is Fortuna 6.0, not a silent Fortuna 5.x header replacement.

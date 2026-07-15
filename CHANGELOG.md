@@ -97,13 +97,6 @@ The 5.0.0 implementation was merged but was not tagged or published. Version
   `-march=native` defaults.
 - Print-only demos as release correctness gates.
 
-### Fortuna handoff
-
-Fortuna remains on its vendored Storm 4.0.4 header. It must add Cython
-exception translation and follow `MIGRATING-4-to-5.md` before adopting the
-throwing Storm 5 API. Storm does not edit or silently migrate Fortuna.
-
 ## [4.0.4]
 
-Last Storm 4 header version known to be vendored by Fortuna when Storm 5.0.0
-was prepared.
+Final Storm 4 release before the clean Storm 5 break.
