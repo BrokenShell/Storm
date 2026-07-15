@@ -1,0 +1,16 @@
+---
+Checks: >
+  -*,
+  bugprone-misplaced-widening-cast,
+  cert-msc51-cpp,
+  clang-analyzer-core.*,
+  clang-analyzer-cplusplus.*,
+  clang-analyzer-deadcode.*,
+  modernize-use-auto,
+  modernize-use-nodiscard,
+  modernize-use-ranges,
+  performance-*
+WarningsAsErrors: '*'
+HeaderFilterRegex: '(^|.*/)include/Storm/.*'
+SystemHeaders: false
+...

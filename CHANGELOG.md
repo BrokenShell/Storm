@@ -1,10 +1,40 @@
 # Changelog
 
 All notable changes to Storm are documented here. Storm follows semantic
-versioning. The 5.0.0 entry remains unreleased until the owner tags and
+versioning. The 5.0.1 entry remains unreleased until the owner tags and
 publishes it.
 
-## [5.0.0] - Unreleased
+## [5.0.1] - Unreleased
+
+### Added
+
+- A checked-in Clang-Tidy policy for the public header and a dedicated
+  Clang-Tidy 18 CI gate.
+- An opt-in `STORM_ENABLE_CLANG_TIDY` CMake configuration for reproducing the
+  repository lint policy locally.
+
+### Changed
+
+- Version is 5.0.1 across project, header, package metadata, documentation,
+  and tests.
+- Engine accessors now use `[[nodiscard]]` so accidentally ignored references
+  are diagnosed.
+- Ability-dice bookkeeping and its final sum now remain in `std::uint64_t`
+  throughout, making the arithmetic domain explicit.
+- Cast-initialized locals and sorting use the configured modern C++20 style.
+- CI uses the Node.js 24-based checkout action, eliminating the hosted
+  Node.js 20 deprecation annotation.
+
+### Documented
+
+- The predictable default thread-local seed is intentionally retained and
+  narrowly suppressed from `cert-msc51-cpp`: deterministic seed zero is part
+  of Storm's public reproducibility contract, not a security claim.
+
+## [5.0.0] - Superseded before release
+
+The 5.0.0 implementation was merged but was not tagged or published. Version
+5.0.1 supersedes it as the first Storm 5 release candidate.
 
 ### Added
 

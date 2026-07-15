@@ -35,7 +35,7 @@ jobs:
             os: windows-latest
             compiler: ''
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure Debug tests
         run: cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DSTORM_BUILD_TESTS=ON -DSTORM_WARNINGS_AS_ERRORS=ON ${{ matrix.compiler }}
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure
         run: cmake -S . -B build/asan-ubsan -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DSTORM_BUILD_TESTS=ON -DSTORM_WARNINGS_AS_ERRORS=ON -DSTORM_ENABLE_ASAN_UBSAN=ON
@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure
         run: cmake -S . -B build/tsan -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++ -DSTORM_BUILD_TESTS=ON -DSTORM_WARNINGS_AS_ERRORS=ON -DSTORM_ENABLE_TSAN=ON
@@ -110,12 +110,28 @@ jobs:
           TSAN_OPTIONS: halt_on_error=1
         run: ctest --test-dir build/tsan --output-on-failure
 
+  clang-tidy:
+    name: Clang-Tidy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Clang-Tidy 18
+        run: sudo apt-get update && sudo apt-get install --yes clang-tidy-18
+
+      - name: Configure public-header lint
+        run: cmake -S . -B build/clang-tidy -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DSTORM_BUILD_TESTS=ON -DSTORM_WARNINGS_AS_ERRORS=ON -DSTORM_ENABLE_CLANG_TIDY=ON -DSTORM_CLANG_TIDY_EXECUTABLE=/usr/bin/clang-tidy-18
+
+      - name: Run repository Clang-Tidy policy
+        run: cmake --build build/clang-tidy --target storm.self_contained_canonical --parallel
+
   benchmark-build:
     name: Opt-in benchmark build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure benchmark
         run: cmake -S . -B build/benchmark -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ -DSTORM_BUILD_TESTS=OFF -DSTORM_BUILD_BENCHMARKS=ON -DSTORM_WARNINGS_AS_ERRORS=ON

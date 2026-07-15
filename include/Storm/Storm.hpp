@@ -14,7 +14,7 @@ namespace Storm {
 
 using engine_type = std::mt19937_64;
 
-inline constexpr char version[] = "5.0.0";
+inline constexpr char version[] = "5.0.1";
 
 namespace detail {
 
@@ -37,7 +37,7 @@ inline auto bounded(engine_type& engine, const std::uint64_t bound) noexcept -> 
     }
     const std::uint64_t threshold = (std::uint64_t{0} - bound) % bound;
     for (;;) {
-        const std::uint64_t value = static_cast<std::uint64_t>(engine());
+        const auto value = static_cast<std::uint64_t>(engine());
         if (value >= threshold) {
             return value % bound;
         }
@@ -60,8 +60,8 @@ class Generator {
 public:
     explicit Generator(const std::uint64_t seed_value = 0) : engine_{seed_value} {}
 
-    auto engine() noexcept -> engine_type& { return engine_; }
-    auto engine() const noexcept -> const engine_type& { return engine_; }
+    [[nodiscard]] auto engine() noexcept -> engine_type& { return engine_; }
+    [[nodiscard]] auto engine() const noexcept -> const engine_type& { return engine_; }
     void seed(const std::uint64_t seed_value) { engine_.seed(seed_value); }
     void reseed_from_entropy() { detail::seed_from_entropy(engine_); }
 
@@ -69,8 +69,9 @@ private:
     engine_type engine_;
 };
 
-inline auto thread_engine() -> engine_type& {
-    thread_local engine_type engine{0};
+[[nodiscard]] inline auto thread_engine() -> engine_type& {
+    // Deterministic initialization, including seed zero, is part of Storm's public contract.
+    thread_local engine_type engine{0};  // NOLINT(cert-msc51-cpp)
     return engine;
 }
 
@@ -136,7 +137,7 @@ inline auto random_range(engine_type& engine,
         if (start >= stop) {
             throw std::invalid_argument{"random_range is empty for this positive step"};
         }
-        const std::uint64_t stride = static_cast<std::uint64_t>(step);
+        const auto stride = static_cast<std::uint64_t>(step);
         const std::uint64_t span = detail::signed_key(stop) - start_key;
         const std::uint64_t count = ((span - std::uint64_t{1}) / stride) + std::uint64_t{1};
         const std::uint64_t offset = detail::bounded(engine, count);
@@ -199,18 +200,18 @@ inline auto ability_dice(engine_type& engine, const std::size_t dice_count) -> s
     if (dice_count < 3) {
         throw std::invalid_argument{"ability_dice requires at least three dice"};
     }
-    std::array<std::size_t, 3> best{};
+    std::array<std::uint64_t, 3> best{};
     for (std::size_t index = 0; index < dice_count; ++index) {
-        const std::size_t value = roll_die(engine, 6);
+        const auto value = static_cast<std::uint64_t>(roll_die(engine, 6));
         if (value > best[0]) {
             best[0] = value;
-            std::sort(best.begin(), best.end());
+            std::ranges::sort(best);
         }
         if (best[0] == 6) {
             break;
         }
     }
-    return static_cast<std::uint64_t>(best[0] + best[1] + best[2]);
+    return best[0] + best[1] + best[2];
 }
 
 inline auto ability_dice(const std::size_t dice_count) -> std::uint64_t {

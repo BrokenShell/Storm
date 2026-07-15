@@ -17,6 +17,13 @@ target_compile_definitions(
     PRIVATE STORM_TEST_PROJECT_VERSION="${PROJECT_VERSION}"
 )
 storm_add_test(storm.self_contained_canonical self_contained_canonical.cpp)
+if(STORM_ENABLE_CLANG_TIDY)
+    set_target_properties(
+        storm.self_contained_canonical
+        PROPERTIES
+            CXX_CLANG_TIDY "${STORM_CLANG_TIDY_EXECUTABLE};--warnings-as-errors=*"
+    )
+endif()
 storm_add_test(
     storm.multi_tu
     multi_tu_main.cpp
