@@ -1,0 +1,33 @@
+# CMake build trees and generated metadata
+/build*/
+/cmake-build-*/
+/CMakeCache.txt
+/CMakeFiles/
+/CTestTestfile.cmake
+/Makefile
+/Testing/
+/cmake_install.cmake
+/compile_commands.json
+
+# Compiler and linker products
+*.a
+*.d
+*.dll
+*.dylib
+*.exe
+*.lib
+*.o
+*.obj
+*.pdb
+*.so
+*.gcda
+*.gcno
+*.profdata
+*.profraw
+
+# Historical in-source script outputs
+/Storm
+/storm
+
+# Platform metadata
+.DS_Store

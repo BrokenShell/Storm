@@ -1,0 +1,124 @@
+# SPDX-License-Identifier: MIT
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: storm-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test-package:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux GCC
+            os: ubuntu-latest
+            compiler: -DCMAKE_CXX_COMPILER=g++
+          - name: Linux Clang
+            os: ubuntu-latest
+            compiler: -DCMAKE_CXX_COMPILER=clang++
+          - name: macOS AppleClang
+            os: macos-latest
+            compiler: -DCMAKE_CXX_COMPILER=clang++
+          - name: Windows MSVC
+            os: windows-latest
+            compiler: ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Debug tests
+        run: cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DSTORM_BUILD_TESTS=ON -DSTORM_WARNINGS_AS_ERRORS=ON ${{ matrix.compiler }}
+
+      - name: Build Debug tests
+        run: cmake --build build/debug --config Debug --parallel
+
+      - name: Run Debug tests
+        run: ctest --test-dir build/debug -C Debug --output-on-failure
+
+      - name: Configure Release install
+        run: cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DSTORM_BUILD_TESTS=OFF ${{ matrix.compiler }}
+
+      - name: Build Release
+        run: cmake --build build/release --config Release --parallel
+
+      - name: Stage install
+        run: cmake --install build/release --config Release --prefix "${{ github.workspace }}/build/stage"
+
+      - name: Configure installed package consumer
+        run: cmake -S tests/package_consumer -B build/package-consumer -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ github.workspace }}/build/stage" ${{ matrix.compiler }}
+
+      - name: Build installed package consumer
+        run: cmake --build build/package-consumer --config Release --parallel
+
+      - name: Run installed package consumer
+        run: ctest --test-dir build/package-consumer -C Release --output-on-failure
+
+      - name: Configure add_subdirectory consumer
+        run: cmake -S tests/add_subdirectory_consumer -B build/add-subdirectory-consumer -DCMAKE_BUILD_TYPE=Release ${{ matrix.compiler }}
+
+      - name: Build add_subdirectory consumer
+        run: cmake --build build/add-subdirectory-consumer --config Release --parallel
+
+      - name: Run add_subdirectory consumer
+        run: ctest --test-dir build/add-subdirectory-consumer -C Release --output-on-failure
+
+  asan-ubsan:
+    name: Linux Clang ASan + UBSan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build/asan-ubsan -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DSTORM_BUILD_TESTS=ON -DSTORM_WARNINGS_AS_ERRORS=ON -DSTORM_ENABLE_ASAN_UBSAN=ON
+
+      - name: Build
+        run: cmake --build build/asan-ubsan --parallel
+
+      - name: Test
+        env:
+          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: ctest --test-dir build/asan-ubsan --output-on-failure
+
+  tsan:
+    name: Linux GCC TSan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build/tsan -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++ -DSTORM_BUILD_TESTS=ON -DSTORM_WARNINGS_AS_ERRORS=ON -DSTORM_ENABLE_TSAN=ON
+
+      - name: Build
+        run: cmake --build build/tsan --parallel
+
+      - name: Test
+        env:
+          TSAN_OPTIONS: halt_on_error=1
+        run: ctest --test-dir build/tsan --output-on-failure
+
+  benchmark-build:
+    name: Opt-in benchmark build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure benchmark
+        run: cmake -S . -B build/benchmark -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ -DSTORM_BUILD_TESTS=OFF -DSTORM_BUILD_BENCHMARKS=ON -DSTORM_WARNINGS_AS_ERRORS=ON
+
+      - name: Build benchmark without a hosted timing gate
+        run: cmake --build build/benchmark --parallel
