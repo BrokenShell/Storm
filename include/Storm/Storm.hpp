@@ -119,6 +119,13 @@ inline auto stable_ratio(const Float first, const Float second) noexcept -> Floa
     return ratio / (1.0 + ratio);
 }
 
+inline auto symmetric_linear(engine_type& engine, const Unsigned bound) noexcept -> Integer {
+    const Unsigned first = bounded(engine, bound + Unsigned{1});
+    const Unsigned second = bounded(engine, bound + Unsigned{1});
+    if (first >= second) return static_cast<Integer>(first - second);
+    return -static_cast<Integer>(second - first);
+}
+
 }  // namespace detail
 
 namespace detail {
@@ -689,10 +696,7 @@ inline auto plus_or_minus_linear(const Integer number) -> Integer {
         throw std::overflow_error{"a symmetric LLONG_MIN interval is not representable"};
     }
     const Unsigned bound = static_cast<Unsigned>(number < 0 ? -number : number);
-    const Unsigned first = detail::bounded(thread_engine(), bound + Unsigned{1});
-    const Unsigned second = detail::bounded(thread_engine(), bound + Unsigned{1});
-    if (first >= second) return static_cast<Integer>(first - second);
-    return -static_cast<Integer>(second - first);
+    return detail::symmetric_linear(thread_engine(), bound);
 }
 
 STORM_DEPRECATED("legacy compatibility recipe")
@@ -710,7 +714,7 @@ inline auto plus_or_minus_gauss(const Integer number) -> Integer {
         sample < static_cast<Float>(std::numeric_limits<Integer>::max())) {
         return static_cast<Integer>(sample);
     }
-    return plus_or_minus_linear(bound);
+    return detail::symmetric_linear(thread_engine(), static_cast<Unsigned>(bound));
 }
 }  // namespace GetInt
 
