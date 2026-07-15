@@ -1,10 +1,9 @@
 # Changelog
 
 All notable changes to Storm are documented here. Storm follows semantic
-versioning. The 5.0.1 entry remains unreleased until the owner tags and
-publishes it.
+versioning.
 
-## [5.0.1] - Unreleased
+## [5.0.1] - 2026-07-15
 
 ### Added
 
@@ -34,7 +33,7 @@ publishes it.
 ## [5.0.0] - Superseded before release
 
 The 5.0.0 implementation was merged but was not tagged or published. Version
-5.0.1 supersedes it as the first Storm 5 release candidate.
+5.0.1 supersedes it as the first Storm 5 release.
 
 ### Added
 
