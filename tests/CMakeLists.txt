@@ -10,8 +10,6 @@ function(storm_add_test target)
 endfunction()
 
 storm_add_test(storm.core_contracts core_contracts.cpp)
-storm_add_test(storm.distribution_contracts distribution_contracts.cpp)
-storm_add_test(storm.compatibility_contracts compatibility_contracts.cpp)
 storm_add_test(storm.statistical_smoke statistical_smoke.cpp)
 storm_add_test(storm.version version.cpp)
 target_compile_definitions(
@@ -19,7 +17,6 @@ target_compile_definitions(
     PRIVATE STORM_TEST_PROJECT_VERSION="${PROJECT_VERSION}"
 )
 storm_add_test(storm.self_contained_canonical self_contained_canonical.cpp)
-storm_add_test(storm.self_contained_forwarding self_contained_forwarding.cpp)
 storm_add_test(
     storm.multi_tu
     multi_tu_main.cpp

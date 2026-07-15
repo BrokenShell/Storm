@@ -9,7 +9,7 @@
 
 namespace {
 
-using Sequence = std::array<Storm::Integer, 8>;
+using Sequence = std::array<std::int64_t, 8>;
 
 auto draw_tls_sequence(const std::uint64_t seed_value) -> Sequence {
     Storm::seed(seed_value);

@@ -8,8 +8,8 @@
 | 4.x and earlier | Not supported |
 
 Fortuna's current vendored Storm 4.0.4 header is isolated from the Storm 5
-release. That compatibility fact does not make Storm 4 a supported security
-branch.
+release. That separate vendoring decision does not make Storm 4 a supported
+security branch.
 
 ## Reporting a vulnerability
 

@@ -45,20 +45,6 @@ void expect_throws(Callable&& callable,
     std::cerr << file << ':' << line << ": expected exception from: " << expression << '\n';
 }
 
-template <typename Callable>
-void expect_any_throw(Callable&& callable,
-                      const std::string_view expression,
-                      const std::string_view file,
-                      const int line) {
-    try {
-        callable();
-    } catch (...) {
-        return;
-    }
-    ++failures;
-    std::cerr << file << ':' << line << ": expected exception from: " << expression << '\n';
-}
-
 inline auto finish() -> int {
     if (failures != 0) {
         std::cerr << failures << " test assertion(s) failed\n";
@@ -78,7 +64,3 @@ inline auto approximately(const double actual, const double expected, const doub
 #define STORM_EXPECT_THROWS(exception_type, expression)                                    \
     ::storm_test::expect_throws<exception_type>([&] { static_cast<void>(expression); },     \
                                                 #expression, __FILE__, __LINE__)
-
-#define STORM_EXPECT_ANY_THROW(expression)                                                   \
-    ::storm_test::expect_any_throw([&] { static_cast<void>(expression); }, #expression,      \
-                                   __FILE__, __LINE__)

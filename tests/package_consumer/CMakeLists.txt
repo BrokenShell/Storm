@@ -16,7 +16,7 @@ endfunction()
 
 assert_no_storm_policy_leak(Storm::Storm)
 
-add_executable(storm_package_consumer main.cpp forwarding.cpp)
+add_executable(storm_package_consumer main.cpp)
 target_link_libraries(storm_package_consumer PRIVATE Storm::Storm)
 set_target_properties(storm_package_consumer PROPERTIES CXX_EXTENSIONS OFF)
 

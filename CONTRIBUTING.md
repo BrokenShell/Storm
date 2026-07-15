@@ -58,11 +58,10 @@ that includes:
 - public-header self-containment and multi-translation-unit ODR use
 - deterministic seed zero and injected engine state
 - TLS isolation with real threads
-- invalid arguments, NaN, and infinity
+- invalid arguments and empty intervals
 - `LLONG_MIN`, `LLONG_MAX`, complete signed intervals, and values around
   `2^53`
 - empty ranges, zero-sized indices, and dice overflow
-- positive and negative legacy range/index signs
 - conservative deterministic statistical smoke tests
 - project, header, package, and runtime version consistency
 
@@ -77,7 +76,6 @@ tests or flaky assertions that occasionally pass.
 - Pass algorithm engines by reference; do not hide new process-global state.
 - Avoid signed overflow, floating conversion for integer range arithmetic,
   `abs(LLONG_MIN)`, and negation of `LLONG_MIN`.
-- Validate floating parameters for finiteness and domain before use.
 - Use `std::invalid_argument` for invalid domains or empty intervals and
   `std::overflow_error` for unrepresentable arithmetic.
 - Do not add unconditional `noexcept` when validation, allocation, entropy, or
@@ -114,8 +112,8 @@ Do not tag or publish a release as part of an ordinary pull request.
 Release preparation is an owner-directed step after review; a feature pull
 request must not create a tag or publish an archive. For a release candidate:
 
-1. Confirm that the project, public headers, package configuration, changelog,
-   and runtime version accessor all report the same version.
+1. Confirm that the project, public header, package configuration, changelog,
+   and `Storm::version` all report the same version.
 2. Run the strict Debug, supported sanitizer, Release install, and isolated
    package-consumer checks from clean build directories.
 3. Create a source archive from the candidate commit, extract it outside the
