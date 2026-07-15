@@ -8,6 +8,7 @@ dependency-free public surface and make behavioral claims testable.
 - A C++20 compiler
 - CMake
 - Git
+- Clang-Tidy 18 or newer when changing the public header
 
 The normal workflow does not download dependencies. Do not add a mandatory
 network fetch for tests or benchmarks without prior project-owner agreement.
@@ -24,6 +25,22 @@ cmake -S . -B build/debug \
 cmake --build build/debug --parallel
 ctest --test-dir build/debug --output-on-failure
 ```
+
+Run the repository-owned Clang-Tidy policy when changing
+`include/Storm/Storm.hpp`:
+
+```sh
+cmake -S . -B build/clang-tidy \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DSTORM_BUILD_TESTS=ON \
+  -DSTORM_WARNINGS_AS_ERRORS=ON \
+  -DSTORM_ENABLE_CLANG_TIDY=ON
+cmake --build build/clang-tidy \
+  --target storm.self_contained_canonical --parallel
+```
+
+If `clang-tidy` is not on `PATH`, pass its absolute path with
+`-DSTORM_CLANG_TIDY_EXECUTABLE=/path/to/clang-tidy`.
 
 Run the sanitizer configuration on supported GCC and Clang platforms. If the
 project's sanitizer option is unavailable on a platform, record that as an
@@ -98,6 +115,7 @@ baseline, disclose the environment, and do not add hosted timing thresholds.
 - [ ] The diff is scoped and contains no build artifacts.
 - [ ] New or changed public contracts are documented and tested.
 - [ ] Strict Debug tests pass.
+- [ ] Clang-Tidy passes when the public header changes.
 - [ ] Sanitizer tests pass where supported, or the limitation is classified.
 - [ ] Release installation and a separate package consumer pass.
 - [ ] `git diff --check` is clean.

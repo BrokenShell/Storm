@@ -136,10 +136,10 @@ cmake --build build/debug --parallel
 ctest --test-dir build/debug --output-on-failure
 ```
 
-CI covers GCC, Clang, AppleClang, MSVC, ASan/UBSan, Linux TSan, staged
-installation, `find_package`, and `add_subdirectory` consumers. Benchmarks are
-opt-in and are neither correctness tests nor hosted timing gates; see the
-[benchmark methodology](docs/BENCHMARKS.md).
+CI covers GCC, Clang, AppleClang, MSVC, Clang-Tidy, ASan/UBSan, Linux TSan,
+staged installation, `find_package`, and `add_subdirectory` consumers.
+Benchmarks are opt-in and are neither correctness tests nor hosted timing
+gates; see the [benchmark methodology](docs/BENCHMARKS.md).
 
 ## Documentation
 

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 cmake_minimum_required(VERSION 3.17)
 
-project(Storm VERSION 5.0.0 LANGUAGES CXX)
+project(Storm VERSION 5.0.1 LANGUAGES CXX)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -15,8 +15,20 @@ endif()
 option(STORM_BUILD_TESTS "Build Storm's dependency-free test suite" ${STORM_IS_TOP_LEVEL})
 option(STORM_BUILD_BENCHMARKS "Build Storm's opt-in benchmark executable" OFF)
 option(STORM_WARNINGS_AS_ERRORS "Treat warnings as errors for Storm-owned targets" OFF)
+option(STORM_ENABLE_CLANG_TIDY "Run the repository Clang-Tidy policy on the public header" OFF)
 option(STORM_ENABLE_ASAN_UBSAN "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
 option(STORM_ENABLE_TSAN "Enable ThreadSanitizer" OFF)
+
+if(STORM_ENABLE_CLANG_TIDY)
+    find_program(
+        STORM_CLANG_TIDY_EXECUTABLE
+        NAMES clang-tidy-18 clang-tidy
+        DOC "Clang-Tidy executable used by Storm's lint target"
+    )
+    if(NOT STORM_CLANG_TIDY_EXECUTABLE)
+        message(FATAL_ERROR "STORM_ENABLE_CLANG_TIDY is ON, but clang-tidy was not found")
+    endif()
+endif()
 
 if(STORM_ENABLE_ASAN_UBSAN AND STORM_ENABLE_TSAN)
     message(FATAL_ERROR "ASan/UBSan and TSan cannot be enabled in the same build")

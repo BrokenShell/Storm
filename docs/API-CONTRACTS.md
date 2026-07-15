@@ -1,6 +1,6 @@
 # Storm 5 API contracts
 
-This document defines the public behavior of Storm 5.0.0. The declarations in
+This document defines the public behavior of Storm 5.0.1. The declarations in
 `<Storm/Storm.hpp>` are the source for exact C++ signatures. Storm 4 names and
 the `<Storm.hpp>` include path are not part of Storm 5.
 
@@ -10,12 +10,13 @@ Storm 5 exposes no scalar type aliases. Signed integer and range values use
 `std::int64_t`, unsigned bounds, seeds, and dice totals use `std::uint64_t`,
 indices and counts use `std::size_t`, and canonical values use `double`.
 `Storm::engine_type` is `std::mt19937_64`; `Storm::version` is the string
-`"5.0.0"`.
+`"5.0.1"`.
 
 `Storm::Generator` owns one engine. Copying a generator copies its state and
 forks the sequence. `Generator(seed)` and `Generator::seed(seed)` are
 deterministic for every seed, including zero. `Generator::engine()` returns the
-owned engine by reference.
+owned engine by reference. Engine-reference accessors are `[[nodiscard]]`
+because ignoring the returned reference has no useful effect.
 
 Injected overloads accept a mutable engine reference and advance only that
 engine. Convenience overloads use the calling thread's lazily created engine.
