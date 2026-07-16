@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
-#include <algorithm>
 #include <array>
 #include <bit>
 #include <cstddef>
@@ -52,6 +51,24 @@ inline void seed_from_entropy(engine_type& engine) {
     }
     std::seed_seq sequence{words.begin(), words.end()};
     engine.seed(sequence);
+}
+
+inline void insert_ability_roll(std::array<std::uint64_t, 3>& best,
+                                const std::uint64_t value) noexcept {
+    if (value <= best[0]) {
+        return;
+    }
+    best[0] = value;
+    if (best[0] > best[1]) {
+        const auto lower = best[1];
+        best[1] = best[0];
+        best[0] = lower;
+    }
+    if (best[1] > best[2]) {
+        const auto lower = best[2];
+        best[2] = best[1];
+        best[1] = lower;
+    }
 }
 
 }  // namespace detail
@@ -203,10 +220,7 @@ inline auto ability_dice(engine_type& engine, const std::size_t dice_count) -> s
     std::array<std::uint64_t, 3> best{};
     for (std::size_t index = 0; index < dice_count; ++index) {
         const auto value = static_cast<std::uint64_t>(roll_die(engine, 6));
-        if (value > best[0]) {
-            best[0] = value;
-            std::ranges::sort(best);
-        }
+        detail::insert_ability_roll(best, value);
         if (best[0] == 6) {
             break;
         }

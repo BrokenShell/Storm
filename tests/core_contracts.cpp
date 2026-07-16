@@ -3,6 +3,7 @@
 
 #include "test_harness.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -19,6 +20,25 @@ using unsigned_type = std::uint64_t;
 constexpr auto integer_min = std::numeric_limits<signed_type>::lowest();
 constexpr auto integer_max = std::numeric_limits<signed_type>::max();
 constexpr auto unsigned_max = std::numeric_limits<unsigned_type>::max();
+
+auto reference_ability_dice(Storm::engine_type& engine, const std::size_t dice_count)
+    -> unsigned_type {
+    if (dice_count < 3) {
+        throw std::invalid_argument{"ability_dice requires at least three dice"};
+    }
+    std::array<unsigned_type, 3> best{};
+    for (std::size_t index = 0; index < dice_count; ++index) {
+        const auto value = static_cast<unsigned_type>(Storm::roll_die(engine, 6));
+        if (value > best[0]) {
+            best[0] = value;
+            std::ranges::sort(best);
+        }
+        if (best[0] == 6) {
+            break;
+        }
+    }
+    return best[0] + best[1] + best[2];
+}
 
 void test_version_and_types() {
     static_assert(std::is_same_v<Storm::engine_type, std::mt19937_64>);
@@ -277,6 +297,39 @@ void test_dice() {
     STORM_CHECK(Storm::ability_dice(std::size_t{4}) >= 3U);
 }
 
+void test_ability_dice_reference_equivalence() {
+    constexpr std::size_t seed_count = 1'000;
+    constexpr std::size_t first_dice_count = 3;
+    constexpr std::size_t last_dice_count = 65;
+    constexpr std::size_t repetitions = 20;
+    static_assert(seed_count * (last_dice_count - first_dice_count + 1) * repetitions ==
+                  1'260'000);
+
+    for (std::size_t seed_value = 0; seed_value < seed_count; ++seed_value) {
+        for (std::size_t dice_count = first_dice_count;
+             dice_count <= last_dice_count;
+             ++dice_count) {
+            Storm::engine_type actual_engine{static_cast<unsigned_type>(seed_value)};
+            Storm::engine_type reference_engine{static_cast<unsigned_type>(seed_value)};
+            for (std::size_t repetition = 0; repetition < repetitions; ++repetition) {
+                const unsigned_type expected =
+                    reference_ability_dice(reference_engine, dice_count);
+                const unsigned_type actual = Storm::ability_dice(actual_engine, dice_count);
+                STORM_CHECK(actual == expected);
+                STORM_CHECK(actual_engine == reference_engine);
+            }
+        }
+    }
+
+    for (std::size_t dice_count = 0; dice_count < first_dice_count; ++dice_count) {
+        Storm::engine_type engine{unsigned_type{8675309}};
+        const Storm::engine_type initial_state = engine;
+        STORM_EXPECT_THROWS(std::invalid_argument,
+                            Storm::ability_dice(engine, dice_count));
+        STORM_CHECK(engine == initial_state);
+    }
+}
+
 }  // namespace
 
 auto main() -> int {
@@ -289,5 +342,6 @@ auto main() -> int {
     test_uniform_index();
     test_directed_ranges();
     test_dice();
+    test_ability_dice_reference_equivalence();
     return storm_test::finish();
 }

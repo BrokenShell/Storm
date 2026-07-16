@@ -50,6 +50,7 @@ auto warm_up(const std::size_t iterations, Callable& callable) -> std::uint64_t 
 
 template<typename Callable>
 auto run_case(const std::string_view label,
+              const std::string_view unit,
               const std::size_t iterations,
               Callable&& callable) -> std::uint64_t {
     std::uint64_t checksum = 0;
@@ -60,11 +61,11 @@ auto run_case(const std::string_view label,
     }
     const auto stop = std::chrono::steady_clock::now();
     const auto elapsed = std::chrono::duration<double, std::nano>{stop - start}.count();
-    const auto nanoseconds_per_draw = elapsed / static_cast<double>(iterations);
+    const auto nanoseconds_per_unit = elapsed / static_cast<double>(iterations);
 
     std::cout << std::left << std::setw(38) << label << std::right << std::fixed
-              << std::setprecision(2) << std::setw(12) << nanoseconds_per_draw
-              << " ns/draw  checksum=" << checksum << '\n';
+              << std::setprecision(2) << std::setw(12) << nanoseconds_per_unit
+              << " ns/" << unit << "  checksum=" << checksum << '\n';
     return checksum;
 }
 
@@ -114,6 +115,7 @@ auto main(const int argc, char* argv[]) -> int {
     warmup_checksum ^= warm_up(warmup_iterations, storm_index);
     const auto storm_index_checksum = run_case(
         "Storm::uniform_index",
+        "draw",
         iterations,
         storm_index);
 
@@ -125,6 +127,7 @@ auto main(const int argc, char* argv[]) -> int {
     warmup_checksum ^= warm_up(warmup_iterations, standard_index);
     const auto standard_index_checksum = run_case(
         "std::uniform_int_distribution",
+        "draw",
         iterations,
         standard_index);
 
@@ -135,6 +138,7 @@ auto main(const int argc, char* argv[]) -> int {
     warmup_checksum ^= warm_up(warmup_iterations, storm_canonical);
     const auto storm_canonical_checksum = run_case(
         "Storm::canonical",
+        "draw",
         iterations,
         storm_canonical);
 
@@ -146,11 +150,24 @@ auto main(const int argc, char* argv[]) -> int {
     warmup_checksum ^= warm_up(warmup_iterations, standard_canonical);
     const auto standard_canonical_checksum = run_case(
         "std::generate_canonical<double>",
+        "draw",
         iterations,
         standard_canonical);
 
+    Storm::Generator storm_ability_generator{seed};
+    auto storm_ability = [&storm_ability_generator] {
+        return Storm::ability_dice(storm_ability_generator.engine(), std::size_t{4});
+    };
+    warmup_checksum ^= warm_up(warmup_iterations, storm_ability);
+    const auto storm_ability_checksum = run_case(
+        "Storm::ability_dice (4d6 keep 3)",
+        "call",
+        iterations,
+        storm_ability);
+
     const auto combined_checksum = storm_index_checksum ^ standard_index_checksum ^
-                                   storm_canonical_checksum ^ standard_canonical_checksum;
+                                   storm_canonical_checksum ^ standard_canonical_checksum ^
+                                   storm_ability_checksum;
     std::cout << "\nwarmup checksum=" << warmup_checksum
               << "\ncombined checksum=" << combined_checksum << '\n';
     return 0;

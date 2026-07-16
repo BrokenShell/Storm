@@ -36,7 +36,10 @@ Every measured Storm operation must have either:
 - an explanation that no equivalent standard operation exists.
 
 Examples include raw engine calls, uniform bounded integers, uniform indices,
-canonical doubles, and dice loops. Setup, engine construction, entropy
+canonical doubles, and dice loops such as the common 4d6-keep-three ability
+roll. The standard library has no equivalent combined ability-dice operation,
+so this workload is tracked against earlier Storm revisions on the same
+machine and toolchain. Setup, engine construction, entropy
 acquisition, and sampling are different costs and must not be mixed unless the
 workload explicitly intends to measure all of them.
 
