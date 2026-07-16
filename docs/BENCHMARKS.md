@@ -50,6 +50,15 @@ with the same fixed state and the same standard-library floating distribution;
 the reported checksums make reference equivalence visible without creating a
 timing or correctness gate.
 
+The wide-index selector benchmark uses an equivalent compositional reference:
+both sides build the same shuffled permutation, prepare the same truncated
+Poisson distribution, and return identical selected indices while leaving the
+engines in identical states on one toolchain. The reference physically rotates
+the permutation while the selector advances a cursor. Repeated selection keeps
+construction outside the timed region; the separately labeled construction
+case includes construction and the first selection so every object contributes
+to the reported checksum.
+
 Use fixed deterministic seeds for timed sampling. Entropy reseeding is an I/O
 and platform facility; benchmark it separately if it is relevant.
 

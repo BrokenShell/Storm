@@ -3,3 +3,7 @@
 add_executable(storm_benchmark benchmark.cpp)
 target_link_libraries(storm_benchmark PRIVATE Storm::Storm)
 storm_configure_owned_target(storm_benchmark)
+
+add_executable(storm_wide_index_benchmark wide_index_selector_benchmark.cpp)
+target_link_libraries(storm_wide_index_benchmark PRIVATE Storm::Storm)
+storm_configure_owned_target(storm_wide_index_benchmark)

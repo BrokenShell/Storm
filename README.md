@@ -82,6 +82,18 @@ It does not own application values, callable resolution, locks, fork behavior,
 or entropy state. Construction does not draw; each selection uses the supplied
 engine and returns only an index.
 
+Stateful wide-index schedules use the same ownership boundary. Construction
+prepares the permutation and distance distribution from a supplied engine, and
+each selection advances another explicitly supplied engine reference:
+
+```cpp
+Storm::Generator generator{42};
+Storm::wide_index_selector selector{generator.engine(), 100};
+const std::size_t selected = selector(generator.engine());
+```
+
+The selector owns no engine and has no thread-local convenience overload.
+
 Storm does not wrap the standard distribution catalog. Use a standard-library
 distribution with an injected engine when its contract fits:
 
