@@ -5,6 +5,7 @@
 #include <bit>
 #include <charconv>
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -99,14 +100,16 @@ public:
             cumulative_.push_back(total);
         }
         total_ = total;
+        maximum_draw_ = std::nextafter(total_, 0.0);
     }
 
     auto operator()(Storm::engine_type& engine) const -> std::size_t {
         std::uniform_real_distribution<double> distribution{0.0, total_};
         const double draw = distribution(engine);
+        const double effective_draw = draw < total_ ? draw : maximum_draw_;
         const auto selected = std::find_if(cumulative_.begin(), cumulative_.end(),
-                                           [draw](const double boundary) {
-                                               return boundary > draw;
+                                           [effective_draw](const double boundary) {
+                                               return boundary > effective_draw;
                                            });
         return static_cast<std::size_t>(selected - cumulative_.begin());
     }
@@ -114,6 +117,7 @@ public:
 private:
     std::vector<double> cumulative_;
     double total_{0.0};
+    double maximum_draw_{0.0};
 };
 
 auto weighted_benchmark(const std::size_t size,

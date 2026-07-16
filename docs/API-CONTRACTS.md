@@ -142,6 +142,13 @@ from the supplied engine, includes zero, and excludes one.
 - Returns the index of the first cumulative boundary strictly greater than the
   draw using logarithmic search. Duplicate boundaries created by zero weights
   are skipped, so a zero-weight entry is never selected.
+- Some standard-library implementations can round a floating result up to the
+  upper endpoint for subnormal totals. Construction therefore prepares
+  `nextafter(total, 0)`, the greatest representable `double` below the total.
+  If a distribution result is not below `total`, selection substitutes that
+  prepared value before searching. The effective draw is consequently always
+  in `[0, total)`, including when `total` is `denorm_min()` and the prepared
+  value is zero.
 - Performs one standard-library distribution call and otherwise consumes no
   engine state. The prepared object remains unchanged and owns no engine.
 - Selection is `O(log n)` and performs no allocation.

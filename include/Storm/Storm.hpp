@@ -128,7 +128,8 @@ public:
     [[nodiscard]] auto operator()(engine_type& engine) const -> std::size_t {
         std::uniform_real_distribution<double> distribution{0.0, total_};
         const double draw = distribution(engine);
-        const auto selected = std::ranges::upper_bound(cumulative_, draw);
+        const double effective_draw = draw < total_ ? draw : maximum_draw_;
+        const auto selected = std::ranges::upper_bound(cumulative_, effective_draw);
         return static_cast<std::size_t>(selected - cumulative_.begin());
     }
 
@@ -156,10 +157,12 @@ private:
             throw std::invalid_argument{
                 "PreparedWeightedIndex requires at least one positive weight"};
         }
+        maximum_draw_ = std::nextafter(total_, 0.0);
     }
 
     std::vector<double> cumulative_;
     double total_{0.0};
+    double maximum_draw_{0.0};
 };
 
 inline auto uniform_unsigned(engine_type& engine,

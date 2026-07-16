@@ -25,14 +25,16 @@ public:
             cumulative_.push_back(total);
         }
         total_ = total;
+        maximum_draw_ = std::nextafter(total_, 0.0);
     }
 
     auto operator()(Storm::engine_type& engine) const -> std::size_t {
         std::uniform_real_distribution<double> distribution{0.0, total_};
         const double draw = distribution(engine);
+        const double effective_draw = draw < total_ ? draw : maximum_draw_;
         const auto selected = std::find_if(cumulative_.begin(), cumulative_.end(),
-                                           [draw](const double boundary) {
-                                               return boundary > draw;
+                                           [effective_draw](const double boundary) {
+                                               return boundary > effective_draw;
                                            });
         return static_cast<std::size_t>(selected - cumulative_.begin());
     }
@@ -40,6 +42,7 @@ public:
 private:
     std::vector<double> cumulative_;
     double total_{0.0};
+    double maximum_draw_{0.0};
 };
 
 void test_validation_and_construction_engine_state() {
@@ -90,9 +93,30 @@ void test_strict_cumulative_boundary() {
     STORM_CHECK(engine == draw_engine);
 }
 
+void test_subnormal_endpoint_correction() {
+    constexpr double weight = std::numeric_limits<double>::denorm_min();
+    const Storm::PreparedWeightedIndex single{std::initializer_list<double>{weight}};
+    Storm::engine_type single_engine{std::uint64_t{0}};
+    const std::size_t first = single(single_engine);
+    const std::size_t second = single(single_engine);
+    STORM_CHECK(first < 1U);
+    STORM_CHECK(first == 0U);
+    STORM_CHECK(second < 1U);
+    STORM_CHECK(second == 0U);
+
+    const Storm::PreparedWeightedIndex trailing_zeros{{0.0, weight, 0.0, 0.0}};
+    Storm::engine_type trailing_engine{std::uint64_t{0}};
+    for (std::size_t draw = 0; draw < 10'000; ++draw) {
+        const std::size_t selected = trailing_zeros(trailing_engine);
+        STORM_CHECK(selected < 4U);
+        STORM_CHECK(selected == 1U);
+    }
+}
+
 void test_reference_equivalence() {
-    const std::array<std::vector<double>, 8> tables{
+    const std::array<std::vector<double>, 9> tables{
         std::vector<double>{1.0},
+        std::vector<double>{std::numeric_limits<double>::denorm_min()},
         std::vector<double>{1.0, 1.0, 1.0, 1.0},
         std::vector<double>{1.0, 3.0, 2.0, 8.0},
         std::vector<double>{0.0, 2.0, 3.0},
@@ -132,6 +156,7 @@ void test_zero_weights_are_never_selected() {
 auto main() -> int {
     test_validation_and_construction_engine_state();
     test_strict_cumulative_boundary();
+    test_subnormal_endpoint_correction();
     test_reference_equivalence();
     test_zero_weights_are_never_selected();
     return storm_test::finish();

@@ -15,6 +15,12 @@ versioning.
 - Opt-in consumed Release benchmarks comparing logarithmic and linear prepared
   selection for 4, 100, and 1000 entries without hosted timing thresholds.
 
+### Fixed
+
+- Weighted selection now brings a standard-library draw rounded to the total
+  down to `nextafter(total, 0)` before strict-boundary lookup, preventing an
+  out-of-range index for subnormal totals and tables with trailing zeros.
+
 ## [5.0.1] - 2026-07-15
 
 ### Added
