@@ -10,6 +10,8 @@ The executable compares two equivalent operations using the same fixed seed:
 
 - `Storm::uniform_index` against `std::uniform_int_distribution<std::size_t>`
 - `Storm::canonical` against `std::generate_canonical<double, ...>`
+- `Storm::ability_dice` for the common 4d6-keep-three workload; the standard
+  library has no equivalent combined dice operation
 
 Each workload performs an untimed warmup first. Every warmup and measured result
 contributes to a checksum that is printed, preventing the optimizer from
