@@ -49,11 +49,29 @@ void test_canonical_mean() {
     STORM_CHECK(storm_test::approximately(total / static_cast<double>(samples), 0.5, 0.02));
 }
 
+void test_prepared_weighted_index_frequencies() {
+    constexpr std::size_t samples = 100'000;
+    constexpr std::array<double, 4> expected_fractions{0.1, 0.3, 0.0, 0.6};
+    constexpr double tolerance = 0.015;
+    std::array<std::size_t, expected_fractions.size()> buckets{};
+    const Storm::PreparedWeightedIndex prepared{{1.0, 3.0, 0.0, 6.0}};
+    Storm::Generator generator{std::uint64_t{9'876'543}};
+    for (std::size_t index = 0; index < samples; ++index) {
+        ++buckets[prepared(generator.engine())];
+    }
+    for (std::size_t index = 0; index < buckets.size(); ++index) {
+        const double actual =
+            static_cast<double>(buckets[index]) / static_cast<double>(samples);
+        STORM_CHECK(std::fabs(actual - expected_fractions[index]) <= tolerance);
+    }
+}
+
 }  // namespace
 
 auto main() -> int {
     test_uniform_index_frequencies();
     test_die_frequencies();
     test_canonical_mean();
+    test_prepared_weighted_index_frequencies();
     return storm_test::finish();
 }

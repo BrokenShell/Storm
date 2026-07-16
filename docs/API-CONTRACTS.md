@@ -12,6 +12,11 @@ indices and counts use `std::size_t`, and canonical values use `double`.
 `Storm::engine_type` is `std::mt19937_64`; `Storm::version` is the string
 `"5.0.1"`.
 
+`Storm::PreparedWeightedIndex` owns only prepared numeric selection state: a
+cumulative `double` weight table and its total. It does not own an engine,
+application values, Python objects, callable resolution, locking, fork
+behavior, or process entropy.
+
 `Storm::Generator` owns one engine. Copying a generator copies its state and
 forks the sequence. `Generator(seed)` and `Generator::seed(seed)` are
 deterministic for every seed, including zero. `Generator::engine()` returns the
@@ -34,9 +39,10 @@ originating thread exits.
 - Operations that validate or request entropy are not unconditionally
   `noexcept`.
 
-The clean core has no floating distribution parameters. Applications using
-`<random>` distributions are responsible for validating finite values and the
-distribution's documented domain before construction.
+`PreparedWeightedIndex` rejects invalid weights before any engine is supplied.
+Applications directly using other `<random>` distributions remain responsible
+for validating finite values and the distribution's documented domain before
+construction.
 
 ## Seeding and entropy
 
@@ -115,6 +121,36 @@ that uses the calling thread's engine.
 `canonical(engine)` returns a finite `double` in `[0.0, 1.0)`. It uses 53 bits
 from the supplied engine, includes zero, and excludes one.
 
+## Prepared weighted-index distribution
+
+### `PreparedWeightedIndex(weights)`
+
+- Accepts an `std::initializer_list<double>` or an input range whose references
+  are convertible to `double`.
+- Requires a nonempty range of finite, nonnegative converted weights, at least
+  one of which is positive. Weights are relative and need not be normalized.
+- Builds cumulative weights from left to right in `O(n)` time and owns `O(n)`
+  numeric storage. Construction accepts no engine and consumes no engine state.
+- Throws `std::invalid_argument` for an empty range, a negative or non-finite
+  weight, or an all-zero table. Throws `std::overflow_error` before an addition
+  whose finite positive total is not representable as `double`.
+
+### `prepared(engine)`
+
+- Constructs a `std::uniform_real_distribution<double>` over `[0, total)` and
+  draws using the explicitly supplied engine reference.
+- Returns the index of the first cumulative boundary strictly greater than the
+  draw using logarithmic search. Duplicate boundaries created by zero weights
+  are skipped, so a zero-weight entry is never selected.
+- Performs one standard-library distribution call and otherwise consumes no
+  engine state. The prepared object remains unchanged and owns no engine.
+- Selection is `O(log n)` and performs no allocation.
+
+Cumulative sums and the distribution operate in `double`. Ordinary
+floating-point rounding therefore applies; a positive weight too small to
+advance a much larger cumulative sum has no distinct representable interval.
+The implementation does not renormalize or replace relative weights.
+
 ## Reproducibility
 
 For identical `engine_type` state and inputs, exact output from Storm-owned
@@ -125,4 +161,7 @@ This includes `uniform_integer`, `uniform_unsigned`, `uniform_index`, directed
 Storm does not promise exact cross-toolchain streams for C++ standard-library
 distribution classes. Their transformations may differ between libstdc++,
 libc++, MSVC's standard library, or library versions even though the raw
-`std::mt19937_64` sequence is standardized.
+`std::mt19937_64` sequence is standardized. This limitation applies to
+`PreparedWeightedIndex`, which deliberately preserves the selected standard
+library's `std::uniform_real_distribution<double>` draw and engine-consumption
+behavior.

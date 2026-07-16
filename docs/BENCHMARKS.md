@@ -43,6 +43,13 @@ machine and toolchain. Setup, engine construction, entropy
 acquisition, and sampling are different costs and must not be mixed unless the
 workload explicitly intends to measure all of them.
 
+Prepared weighted-index selection is compared with a linear scan over the same
+cumulative weights at 4, 100, and 1000 entries. Table construction is outside
+the timed repeated-selection region. Both implementations use separate engines
+with the same fixed state and the same standard-library floating distribution;
+the reported checksums make reference equivalence visible without creating a
+timing or correctness gate.
+
 Use fixed deterministic seeds for timed sampling. Entropy reseeding is an I/O
 and platform facility; benchmark it separately if it is relevant.
 

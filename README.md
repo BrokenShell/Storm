@@ -69,6 +69,19 @@ the engine through application code and into these operations:
 - `ability_dice`
 - `canonical`
 
+Prepared relative weights can be selected without transferring engine or
+application-value ownership to Storm:
+
+```cpp
+Storm::PreparedWeightedIndex weighted{{1.0, 0.0, 3.0}};
+const std::size_t selected = weighted(generator.engine());
+```
+
+`PreparedWeightedIndex` validates and owns only cumulative numeric weights.
+It does not own application values, callable resolution, locks, fork behavior,
+or entropy state. Construction does not draw; each selection uses the supplied
+engine and returns only an index.
+
 Storm does not wrap the standard distribution catalog. Use a standard-library
 distribution with an injected engine when its contract fits:
 
@@ -122,6 +135,9 @@ For the same engine state and arguments, exact output from Storm-owned bounded
 integer and index algorithms is stable within major version 5. Standard
 distribution transformations are not promised identical across libstdc++,
 libc++, MSVC's standard library, versions, or toolchains.
+`PreparedWeightedIndex` uses `std::uniform_real_distribution<double>`, so its
+selected sequence and per-call engine consumption have that same
+standard-library portability limitation.
 
 See [API contracts](docs/API-CONTRACTS.md) for the complete public contract.
 
