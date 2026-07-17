@@ -22,7 +22,7 @@ namespace Storm {
 
 using engine_type = std::mt19937_64;
 
-inline constexpr char version[] = "5.0.3";
+inline constexpr char version[] = "5.1.0";
 
 namespace detail {
 

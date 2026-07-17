@@ -10,7 +10,7 @@ Storm 5 exposes no scalar type aliases. Signed integer and range values use
 `std::int64_t`, unsigned bounds, seeds, and dice totals use `std::uint64_t`,
 indices and counts use `std::size_t`, and canonical values use `double`.
 `Storm::engine_type` is `std::mt19937_64`; `Storm::version` is the string
-`"5.0.3"`.
+`"5.1.0"`.
 
 `Storm::PreparedWeightedIndex` and `Storm::PreparedCumulativeWeightedIndex`
 own only prepared numeric selection state: a cumulative `double` boundary

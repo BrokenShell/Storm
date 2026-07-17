@@ -10,7 +10,7 @@
 #endif
 
 auto main() -> int {
-    constexpr std::string_view expected{"5.0.3"};
+    constexpr std::string_view expected{"5.1.0"};
     static_assert(std::string_view{Storm::version} == expected);
     static_assert(std::string_view{STORM_TEST_PROJECT_VERSION} == expected);
     STORM_CHECK(std::string_view{Storm::version} == expected);
