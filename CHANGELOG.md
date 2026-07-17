@@ -3,7 +3,7 @@
 All notable changes to Storm are documented here. Storm follows semantic
 versioning.
 
-## [Unreleased]
+## [5.0.2] - 2026-07-16
 
 ### Added
 
@@ -28,6 +28,12 @@ versioning.
 - Weighted selection now brings a standard-library draw rounded to the total
   down to `nextafter(total, 0)` before strict-boundary lookup, preventing an
   out-of-range index for subnormal totals and tables with trailing zeros.
+
+### Changed
+
+- Ability-dice rolls now maintain their fixed-size sorted result with direct
+  insertion instead of re-sorting after every draw, while preserving returned
+  values and exact engine advancement.
 
 ## [5.0.1] - 2026-07-15
 

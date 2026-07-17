@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 cmake_minimum_required(VERSION 3.17)
 
-project(Storm VERSION 5.0.1 LANGUAGES CXX)
+project(Storm VERSION 5.0.2 LANGUAGES CXX)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)

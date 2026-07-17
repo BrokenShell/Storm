@@ -1,6 +1,6 @@
 # Storm 5 API contracts
 
-This document defines the public behavior of Storm 5.0.1. The declarations in
+This document defines the public behavior of Storm 5.0.2. The declarations in
 `<Storm/Storm.hpp>` are the source for exact C++ signatures. Storm 4 names and
 the `<Storm.hpp>` include path are not part of Storm 5.
 
@@ -10,7 +10,7 @@ Storm 5 exposes no scalar type aliases. Signed integer and range values use
 `std::int64_t`, unsigned bounds, seeds, and dice totals use `std::uint64_t`,
 indices and counts use `std::size_t`, and canonical values use `double`.
 `Storm::engine_type` is `std::mt19937_64`; `Storm::version` is the string
-`"5.0.1"`.
+`"5.0.2"`.
 
 `Storm::PreparedWeightedIndex` owns only prepared numeric selection state: a
 cumulative `double` weight table and its total. It does not own an engine,
