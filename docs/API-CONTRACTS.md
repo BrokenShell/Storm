@@ -92,6 +92,43 @@ hardware-backed, nondeterministic, or cryptographically secure.
 Each function also has a convenience overload with the same value contract
 that uses the calling thread's engine.
 
+## Stateful wide-index selection
+
+### `wide_index_selector(engine, size)` and `selector(engine)`
+
+- Construction requires `size > 0`, otherwise it throws `std::invalid_argument`
+  before intentionally advancing the supplied engine.
+- Construction creates a permutation of `[0, size)` with Fortuna 6.0.2's native
+  Knuth-B schedule. For each `position` from `size - 2` down to zero, it draws
+  `other` uniformly from the closed interval `[position, size - 1]` with
+  `uniform_unsigned` and swaps those entries. It takes O(size) time and storage
+  and may report ordinary allocation failures for populations that cannot be
+  represented by available storage.
+- The rotation width is `max(1, integer_sqrt(size))`. Each selection
+  rejection-samples a `std::poisson_distribution<std::uint64_t>` with mean
+  `rotation_width / 4.0` until the sample is below the width. The cursor begins
+  at `size - 1`, moves cyclically backward by `1 + sample`, and returns the
+  permuted index at that cursor. This is equivalent to positive
+  `deque.rotate(1 + sample)` followed by `data[-1]`.
+- Cursor arithmetic does not overflow `std::size_t`. Returned values are in
+  `[0, size)`, and consecutive selections cannot repeat when `size > 1`.
+- A size-one selector still samples the prepared Poisson distribution, then
+  returns zero. Selection therefore consumes a variable number of engine
+  values, including when rejected distances require another sample.
+- Construction performs `size - 1` bounded unsigned draws and preserves their
+  exact Storm engine schedule. A size-one construction consumes no engine
+  values.
+- The object owns its permutation, cursor, rotation width, and prepared
+  distribution. It never owns or retains an engine, never uses process entropy
+  or hidden global state, and has no thread-local convenience overload.
+- Selection mutates the selector and the caller-owned engine. Concurrent use of
+  either object requires external synchronization. Copying a selector copies
+  its current prepared state; the copies subsequently advance independently
+  when used with independent engines.
+- Exact returned-index and post-operation engine equivalence is expected only
+  on the same standard-library implementation and version. Storm does not
+  promise cross-standard-library sequences for `std::poisson_distribution`.
+
 ## Dice algorithms
 
 ### `roll_die(engine, sides)`

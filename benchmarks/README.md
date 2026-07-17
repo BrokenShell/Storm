@@ -3,8 +3,9 @@
 
 The benchmark is an opt-in diagnostic executable, not a correctness test or a
 hosted timing gate. Configure a Release build with
-`-DSTORM_BUILD_BENCHMARKS=ON`, build `storm_benchmark`, and run it on an idle
-machine. An optional positive integer argument selects the number of draws.
+`-DSTORM_BUILD_BENCHMARKS=ON`, build `storm_benchmark` or
+`storm_wide_index_benchmark`, and run it on an idle machine. An optional
+positive integer argument selects the number of draws.
 
 The executable compares two equivalent operations using the same fixed seed:
 
@@ -14,6 +15,14 @@ The executable compares two equivalent operations using the same fixed seed:
   library has no equivalent combined dice operation
 - `Storm::PreparedWeightedIndex` against an equivalent linear scan over the
   same prepared cumulative weights for 4, 100, and 1000 entries
+
+`storm_wide_index_benchmark` compares `Storm::wide_index_selector` at
+population 100 with a Fortuna 6.0.2 compositional reference. Both use the same
+native Knuth-B construction and unsigned truncated Poisson distribution; the
+reference physically applies positive rotation and returns `data[-1]`, while
+the selector uses an overflow-safe subtracting cursor. Repeated selection is
+measured separately from construction; construction cases include one
+selection so the created object contributes to an observable checksum.
 
 Each workload performs an untimed warmup first. Every warmup and measured result
 contributes to a checksum that is printed, preventing the optimizer from

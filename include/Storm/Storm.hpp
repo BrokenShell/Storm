@@ -11,9 +11,11 @@
 #include <initializer_list>
 #include <iterator>
 #include <limits>
+#include <numeric>
 #include <random>
 #include <ranges>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 namespace Storm {
@@ -76,6 +78,36 @@ inline void insert_ability_roll(std::array<std::uint64_t, 3>& best,
         best[2] = best[1];
         best[1] = lower;
     }
+}
+
+inline constexpr auto integer_sqrt(const std::size_t value) noexcept -> std::size_t {
+    if (value < 2) {
+        return value;
+    }
+
+    std::size_t low = 1;
+    std::size_t high = value / 2 + 1;
+    std::size_t result = 1;
+    while (low <= high) {
+        const std::size_t middle = low + (high - low) / 2;
+        if (middle <= value / middle) {
+            result = middle;
+            low = middle + 1;
+        } else {
+            high = middle - 1;
+        }
+    }
+    return result;
+}
+
+inline constexpr auto subtract_modulo(const std::size_t value,
+                                      const std::size_t decrement,
+                                      const std::size_t modulus) noexcept -> std::size_t {
+    const std::size_t reduced_decrement = decrement % modulus;
+    if (value >= reduced_decrement) {
+        return value - reduced_decrement;
+    }
+    return modulus - (reduced_decrement - value);
 }
 
 }  // namespace detail
@@ -204,6 +236,55 @@ inline auto uniform_index(engine_type& engine, const std::size_t size) -> std::s
 inline auto uniform_index(const std::size_t size) -> std::size_t {
     return uniform_index(thread_engine(), size);
 }
+
+class wide_index_selector {
+public:
+    explicit wide_index_selector(engine_type& engine, const std::size_t size)
+        : permutation_{make_permutation(engine, size)},
+          cursor_{permutation_.size() - 1},
+          rotation_width_{detail::integer_sqrt(size)},
+          distance_{static_cast<double>(rotation_width_) / 4.0} {}
+
+    [[nodiscard]] auto operator()(engine_type& engine) -> std::size_t {
+        distance_type sample = 0;
+        do {
+            sample = distance_(engine);
+        } while (sample >= static_cast<distance_type>(rotation_width_));
+
+        cursor_ = detail::subtract_modulo(
+            cursor_, static_cast<std::size_t>(sample) + 1, permutation_.size());
+        return permutation_[cursor_];
+    }
+
+private:
+    using distance_type = std::uint64_t;
+
+    static auto make_permutation(engine_type& engine, const std::size_t size)
+        -> std::vector<std::size_t> {
+        if (size == 0) {
+            throw std::invalid_argument{"wide_index_selector requires a nonzero size"};
+        }
+
+        std::vector<std::size_t> permutation(size);
+        std::iota(permutation.begin(), permutation.end(), std::size_t{0});
+        const std::size_t last = size - 1;
+        std::size_t position = last;
+        while (position > 0) {
+            --position;
+            const auto other = static_cast<std::size_t>(Storm::uniform_unsigned(
+                engine,
+                static_cast<std::uint64_t>(position),
+                static_cast<std::uint64_t>(last)));
+            std::swap(permutation[position], permutation[other]);
+        }
+        return permutation;
+    }
+
+    std::vector<std::size_t> permutation_;
+    std::size_t cursor_ = 0;
+    std::size_t rotation_width_;
+    std::poisson_distribution<distance_type> distance_;
+};
 
 inline auto random_range(engine_type& engine,
                          const std::int64_t start,
