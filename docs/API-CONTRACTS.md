@@ -1,6 +1,6 @@
 # Storm 5 API contracts
 
-This document defines the public behavior of Storm 5.0.2. The declarations in
+This document defines the public behavior of Storm 5. The declarations in
 `<Storm/Storm.hpp>` are the source for exact C++ signatures. Storm 4 names and
 the `<Storm.hpp>` include path are not part of Storm 5.
 
@@ -12,10 +12,10 @@ indices and counts use `std::size_t`, and canonical values use `double`.
 `Storm::engine_type` is `std::mt19937_64`; `Storm::version` is the string
 `"5.0.2"`.
 
-`Storm::PreparedWeightedIndex` owns only prepared numeric selection state: a
-cumulative `double` weight table and its total. It does not own an engine,
-application values, Python objects, callable resolution, locking, fork
-behavior, or process entropy.
+`Storm::PreparedWeightedIndex` and `Storm::PreparedCumulativeWeightedIndex`
+own only prepared numeric selection state: a cumulative `double` boundary
+table and its total. They do not own an engine, application values, Python
+objects, callable resolution, locking, fork behavior, or process entropy.
 
 `Storm::Generator` owns one engine. Copying a generator copies its state and
 forks the sequence. `Generator(seed)` and `Generator::seed(seed)` are
@@ -39,10 +39,10 @@ originating thread exits.
 - Operations that validate or request entropy are not unconditionally
   `noexcept`.
 
-`PreparedWeightedIndex` rejects invalid weights before any engine is supplied.
-Applications directly using other `<random>` distributions remain responsible
-for validating finite values and the distribution's documented domain before
-construction.
+The prepared weighted-index selectors reject invalid tables before any engine
+is supplied. Applications directly using other `<random>` distributions
+remain responsible for validating finite values and the distribution's
+documented domain before construction.
 
 ## Seeding and entropy
 
@@ -172,13 +172,28 @@ from the supplied engine, includes zero, and excludes one.
   weight, or an all-zero table. Throws `std::overflow_error` before an addition
   whose finite positive total is not representable as `double`.
 
-### `prepared(engine)`
+### `PreparedCumulativeWeightedIndex(boundaries)`
+
+- Accepts an `std::initializer_list<double>` or an input range whose references
+  are convertible to `double`.
+- Requires a nonempty range of finite, nonnegative, monotonically nondecreasing
+  cumulative boundaries with a positive final boundary. Boundaries need not be
+  normalized.
+- Copies each converted `double` boundary directly into owned storage in
+  `O(n)` time. It does not calculate adjacent differences, partial sums, or any
+  other reconstruction. Construction accepts no engine and consumes no engine
+  state.
+- Equal adjacent boundaries represent zero-weight entries and are valid.
+- Throws `std::invalid_argument` for an empty range, a negative or non-finite
+  boundary, decreasing boundaries, or a final boundary of zero.
+
+### `prepared(engine)` for either prepared selector
 
 - Constructs a `std::uniform_real_distribution<double>` over `[0, total)` and
   draws using the explicitly supplied engine reference.
 - Returns the index of the first cumulative boundary strictly greater than the
-  draw using logarithmic search. Duplicate boundaries created by zero weights
-  are skipped, so a zero-weight entry is never selected.
+  draw using logarithmic search. Duplicate boundaries are skipped, so a
+  zero-weight entry is never selected.
 - Some standard-library implementations can round a floating result up to the
   upper endpoint for subnormal totals. Construction therefore prepares
   `nextafter(total, 0)`, the greatest representable `double` below the total.
@@ -190,10 +205,11 @@ from the supplied engine, includes zero, and excludes one.
   engine state. The prepared object remains unchanged and owns no engine.
 - Selection is `O(log n)` and performs no allocation.
 
-Cumulative sums and the distribution operate in `double`. Ordinary
-floating-point rounding therefore applies; a positive weight too small to
-advance a much larger cumulative sum has no distinct representable interval.
-The implementation does not renormalize or replace relative weights.
+Relative-weight cumulative sums and the distribution operate in `double`.
+Ordinary floating-point rounding therefore applies; a positive relative weight
+too small to advance a much larger cumulative sum has no distinct representable
+interval. The implementations do not normalize, renormalize, or replace the
+supplied values.
 
 ## Reproducibility
 
@@ -206,6 +222,6 @@ Storm does not promise exact cross-toolchain streams for C++ standard-library
 distribution classes. Their transformations may differ between libstdc++,
 libc++, MSVC's standard library, or library versions even though the raw
 `std::mt19937_64` sequence is standardized. This limitation applies to
-`PreparedWeightedIndex`, which deliberately preserves the selected standard
-library's `std::uniform_real_distribution<double>` draw and engine-consumption
-behavior.
+both prepared weighted-index selectors, which deliberately preserve the
+selected standard library's `std::uniform_real_distribution<double>` draw and
+engine-consumption behavior.

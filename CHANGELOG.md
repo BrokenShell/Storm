@@ -3,6 +3,18 @@
 All notable changes to Storm are documented here. Storm follows semantic
 versioning.
 
+## [5.0.3]
+
+### Added
+
+- `Storm::PreparedCumulativeWeightedIndex`, a validated prepared cumulative
+  boundary table that preserves supplied `double` boundaries directly and uses
+  the same logarithmic strict-boundary selection schedule as
+  `PreparedWeightedIndex`.
+- Deterministic equivalence coverage proving relative weights and their
+  cumulative boundaries return the same indexes and advance identically seeded
+  engines in lockstep.
+
 ## [5.0.2] - 2026-07-16
 
 ### Added
