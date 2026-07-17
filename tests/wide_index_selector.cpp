@@ -18,9 +18,10 @@
 
 namespace {
 
-class reference_wide_index_selector {
+class fortuna_6_0_2_wide_index_reference {
 public:
-    explicit reference_wide_index_selector(Storm::engine_type& engine, const std::size_t size)
+    explicit fortuna_6_0_2_wide_index_reference(Storm::engine_type& engine,
+                                                const std::size_t size)
         : permutation_{make_permutation(engine, size)},
           rotation_width_{integer_sqrt(size)},
           distance_{static_cast<double>(rotation_width_) / 4.0} {}
@@ -34,13 +35,13 @@ public:
         const std::size_t advance =
             (static_cast<std::size_t>(sample) + 1) % permutation_.size();
         const auto middle =
-            permutation_.begin() + static_cast<std::ptrdiff_t>(advance);
+            permutation_.end() - static_cast<std::ptrdiff_t>(advance);
         std::ranges::rotate(permutation_, middle);
-        return permutation_.front();
+        return permutation_.back();
     }
 
 private:
-    using distance_type = long long;
+    using distance_type = std::uint64_t;
 
     static auto make_permutation(Storm::engine_type& engine, const std::size_t size)
         -> std::vector<std::size_t> {
@@ -49,7 +50,16 @@ private:
         }
         std::vector<std::size_t> permutation(size);
         std::iota(permutation.begin(), permutation.end(), std::size_t{0});
-        std::ranges::shuffle(permutation, engine);
+        const std::size_t last = size - 1;
+        std::size_t position = last;
+        while (position > 0) {
+            --position;
+            const auto other = static_cast<std::size_t>(Storm::uniform_unsigned(
+                engine,
+                static_cast<std::uint64_t>(position),
+                static_cast<std::uint64_t>(last)));
+            std::swap(permutation[position], permutation[other]);
+        }
         return permutation;
     }
 
@@ -90,8 +100,35 @@ void test_api_and_invalid_domain() {
     constexpr std::size_t root = Storm::detail::integer_sqrt(size_max);
     static_assert(root <= size_max / root);
     static_assert(root + 1 > size_max / (root + 1));
-    static_assert(Storm::detail::add_modulo(size_max - 1, 2, size_max) == 1);
-    static_assert(Storm::detail::add_modulo(0, 1, 1) == 0);
+    static_assert(Storm::detail::subtract_modulo(0, 2, size_max) == size_max - 2);
+    static_assert(Storm::detail::subtract_modulo(0, 1, 1) == 0);
+}
+
+void test_fortuna_6_0_2_compatibility_fixture() {
+    // Copied from Fortuna 6.0.2 test_selector_fast_paths.py at commit 072fa36.
+    constexpr std::uint64_t seed = 0xF07A'6005;
+    constexpr std::size_t size = 100;
+    constexpr std::size_t count = 64;
+    constexpr std::uint64_t expected_after_construction = 6'176'130'344'290'732'833ULL;
+
+    Storm::engine_type construction_engine{seed};
+    [[maybe_unused]] Storm::wide_index_selector construction_fixture{
+        construction_engine, size};
+    STORM_CHECK(Storm::uniform_unsigned(
+                    construction_engine,
+                    std::uint64_t{0},
+                    std::numeric_limits<std::uint64_t>::max()) ==
+                expected_after_construction);
+
+    Storm::engine_type actual_engine{seed};
+    Storm::engine_type reference_engine{seed};
+    Storm::wide_index_selector actual{actual_engine, size};
+    fortuna_6_0_2_wide_index_reference reference{reference_engine, size};
+    STORM_CHECK(actual_engine == reference_engine);
+    for (std::size_t draw = 0; draw < count; ++draw) {
+        STORM_CHECK(actual(actual_engine) == reference(reference_engine));
+        STORM_CHECK(actual_engine == reference_engine);
+    }
 }
 
 void test_reference_equivalence() {
@@ -105,7 +142,7 @@ void test_reference_equivalence() {
             Storm::engine_type actual_engine{static_cast<std::uint64_t>(seed)};
             Storm::engine_type reference_engine{static_cast<std::uint64_t>(seed)};
             Storm::wide_index_selector actual{actual_engine, size};
-            reference_wide_index_selector reference{reference_engine, size};
+            fortuna_6_0_2_wide_index_reference reference{reference_engine, size};
             STORM_CHECK(actual_engine == reference_engine);
 
             for (std::size_t draw = 0; draw < draws_per_case; ++draw) {
@@ -159,6 +196,7 @@ void test_broad_marginal_uniformity() {
 
 auto main() -> int {
     test_api_and_invalid_domain();
+    test_fortuna_6_0_2_compatibility_fixture();
     test_reference_equivalence();
     test_bounds_coverage_and_no_immediate_repeat();
     test_broad_marginal_uniformity();

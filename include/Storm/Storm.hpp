@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
-#include <algorithm>
 #include <array>
 #include <bit>
 #include <cmath>
@@ -15,6 +14,7 @@
 #include <random>
 #include <ranges>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 namespace Storm {
@@ -99,15 +99,14 @@ inline constexpr auto integer_sqrt(const std::size_t value) noexcept -> std::siz
     return result;
 }
 
-inline constexpr auto add_modulo(const std::size_t value,
-                                 const std::size_t increment,
-                                 const std::size_t modulus) noexcept -> std::size_t {
-    const std::size_t reduced_increment = increment % modulus;
-    const std::size_t distance_to_end = modulus - value;
-    if (reduced_increment >= distance_to_end) {
-        return reduced_increment - distance_to_end;
+inline constexpr auto subtract_modulo(const std::size_t value,
+                                      const std::size_t decrement,
+                                      const std::size_t modulus) noexcept -> std::size_t {
+    const std::size_t reduced_decrement = decrement % modulus;
+    if (value >= reduced_decrement) {
+        return value - reduced_decrement;
     }
-    return value + reduced_increment;
+    return modulus - (reduced_decrement - value);
 }
 
 }  // namespace detail
@@ -241,6 +240,7 @@ class wide_index_selector {
 public:
     explicit wide_index_selector(engine_type& engine, const std::size_t size)
         : permutation_{make_permutation(engine, size)},
+          cursor_{permutation_.size() - 1},
           rotation_width_{detail::integer_sqrt(size)},
           distance_{static_cast<double>(rotation_width_) / 4.0} {}
 
@@ -250,13 +250,13 @@ public:
             sample = distance_(engine);
         } while (sample >= static_cast<distance_type>(rotation_width_));
 
-        cursor_ = detail::add_modulo(
+        cursor_ = detail::subtract_modulo(
             cursor_, static_cast<std::size_t>(sample) + 1, permutation_.size());
         return permutation_[cursor_];
     }
 
 private:
-    using distance_type = long long;
+    using distance_type = std::uint64_t;
 
     static auto make_permutation(engine_type& engine, const std::size_t size)
         -> std::vector<std::size_t> {
@@ -266,7 +266,16 @@ private:
 
         std::vector<std::size_t> permutation(size);
         std::iota(permutation.begin(), permutation.end(), std::size_t{0});
-        std::ranges::shuffle(permutation, engine);
+        const std::size_t last = size - 1;
+        std::size_t position = last;
+        while (position > 0) {
+            --position;
+            const auto other = static_cast<std::size_t>(Storm::uniform_unsigned(
+                engine,
+                static_cast<std::uint64_t>(position),
+                static_cast<std::uint64_t>(last)));
+            std::swap(permutation[position], permutation[other]);
+        }
         return permutation;
     }
 

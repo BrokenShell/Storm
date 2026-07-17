@@ -17,11 +17,12 @@ The executable compares two equivalent operations using the same fixed seed:
   same prepared cumulative weights for 4, 100, and 1000 entries
 
 `storm_wide_index_benchmark` compares `Storm::wide_index_selector` at
-population 100 with a compositional reference that uses the same shuffled
-permutation and truncated Poisson distribution but physically rotates its
-vector after every sample. It measures repeated selection separately from
-construction; the construction cases include one selection so the created
-object contributes to an observable checksum.
+population 100 with a Fortuna 6.0.2 compositional reference. Both use the same
+native Knuth-B construction and unsigned truncated Poisson distribution; the
+reference physically applies positive rotation and returns `data[-1]`, while
+the selector uses an overflow-safe subtracting cursor. Repeated selection is
+measured separately from construction; construction cases include one
+selection so the created object contributes to an observable checksum.
 
 Each workload performs an untimed warmup first. Every warmup and measured result
 contributes to a checksum that is printed, preventing the optimizer from

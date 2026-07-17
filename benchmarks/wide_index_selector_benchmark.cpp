@@ -15,6 +15,7 @@
 #include <random>
 #include <string_view>
 #include <system_error>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -23,16 +24,13 @@ constexpr std::uint64_t seed = 0x71F5'2026'0716'0009ULL;
 constexpr std::size_t population_size = 100;
 constexpr std::size_t default_iterations = 2'000'000;
 
-class compositional_wide_index_reference {
+class fortuna_6_0_2_compositional_reference {
 public:
-    explicit compositional_wide_index_reference(Storm::engine_type& engine,
-                                                const std::size_t size)
-        : permutation_(size),
+    explicit fortuna_6_0_2_compositional_reference(Storm::engine_type& engine,
+                                                   const std::size_t size)
+        : permutation_{make_permutation(engine, size)},
           rotation_width_{integer_sqrt(size)},
-          distance_{static_cast<double>(rotation_width_) / 4.0} {
-        std::iota(permutation_.begin(), permutation_.end(), std::size_t{0});
-        std::ranges::shuffle(permutation_, engine);
-    }
+          distance_{static_cast<double>(rotation_width_) / 4.0} {}
 
     auto operator()(Storm::engine_type& engine) -> std::size_t {
         distance_type sample = 0;
@@ -43,13 +41,30 @@ public:
         const std::size_t advance =
             (static_cast<std::size_t>(sample) + 1) % permutation_.size();
         const auto middle =
-            permutation_.begin() + static_cast<std::ptrdiff_t>(advance);
+            permutation_.end() - static_cast<std::ptrdiff_t>(advance);
         std::ranges::rotate(permutation_, middle);
-        return permutation_.front();
+        return permutation_.back();
     }
 
 private:
-    using distance_type = long long;
+    using distance_type = std::uint64_t;
+
+    static auto make_permutation(Storm::engine_type& engine, const std::size_t size)
+        -> std::vector<std::size_t> {
+        std::vector<std::size_t> permutation(size);
+        std::iota(permutation.begin(), permutation.end(), std::size_t{0});
+        const std::size_t last = size - 1;
+        std::size_t position = last;
+        while (position > 0) {
+            --position;
+            const auto other = static_cast<std::size_t>(Storm::uniform_unsigned(
+                engine,
+                static_cast<std::uint64_t>(position),
+                static_cast<std::uint64_t>(last)));
+            std::swap(permutation[position], permutation[other]);
+        }
+        return permutation;
+    }
 
     static constexpr auto integer_sqrt(const std::size_t value) noexcept -> std::size_t {
         std::size_t root = 0;
@@ -138,13 +153,15 @@ auto main(const int argc, char* argv[]) -> int {
               << construction_iterations << ", seed=" << seed
               << ", population=" << population_size << ", warmup=" << warmup_iterations
               << ", construction_warmup=" << construction_warmup
-              << "\nReference physically rotates the same shuffled vector; selector uses a cursor.\n"
+              << "\nReference physically applies Fortuna 6.0.2 positive rotation and data[-1].\n"
+              << "Selector preserves that schedule with a subtracting cursor.\n"
               << "Construction cases include construction plus the first selection.\n"
               << "Results are descriptive; no timing threshold is applied.\n\n";
 
     Storm::engine_type reference_engine{seed};
     Storm::engine_type selector_engine{seed};
-    compositional_wide_index_reference reference{reference_engine, population_size};
+    fortuna_6_0_2_compositional_reference reference{
+        reference_engine, population_size};
     Storm::wide_index_selector selector{selector_engine, population_size};
     if (reference_engine != selector_engine) {
         std::cerr << "construction engine states differ\n";
@@ -156,14 +173,14 @@ auto main(const int argc, char* argv[]) -> int {
     const std::uint64_t reference_warmup = consume(warmup_iterations, reference_draw);
     const std::uint64_t selector_warmup = consume(warmup_iterations, selector_draw);
     const std::uint64_t reference_checksum =
-        run_case("compositional reference", "draw", iterations, reference_draw);
+        run_case("Fortuna 6.0.2 reference", "draw", iterations, reference_draw);
     const std::uint64_t selector_checksum =
         run_case("Storm::wide_index_selector", "draw", iterations, selector_draw);
 
     Storm::engine_type reference_construction_engine{seed};
     Storm::engine_type selector_construction_engine{seed};
     auto construct_reference = [&reference_construction_engine] {
-        compositional_wide_index_reference constructed{
+        fortuna_6_0_2_compositional_reference constructed{
             reference_construction_engine, population_size};
         return constructed(reference_construction_engine);
     };
@@ -176,7 +193,7 @@ auto main(const int argc, char* argv[]) -> int {
     const std::uint64_t selector_construction_warmup =
         consume(construction_warmup, construct_selector);
     const std::uint64_t reference_construction_checksum = run_case(
-        "compositional reference construct + draw",
+        "Fortuna 6.0.2 reference construct + draw",
         "call",
         construction_iterations,
         construct_reference);

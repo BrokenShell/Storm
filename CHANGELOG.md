@@ -15,7 +15,8 @@ versioning.
 - Opt-in consumed Release benchmarks comparing logarithmic and linear prepared
   selection for 4, 100, and 1000 entries without hosted timing thresholds.
 - `Storm::wide_index_selector`, a stateful, engine-external wide-index schedule
-  that prepares an unbiased permutation and truncated-Poisson forward rotation.
+  that preserves Fortuna 6.0.2's native Knuth-B permutation, unsigned Poisson
+  distance, and positive-rotation selection schedule.
 - Deterministic same-toolchain reference equivalence, engine-state, bounds,
   coverage, no-repeat, and broad marginal-uniformity tests for the selector.
 - An opt-in Release benchmark comparing cursor selection with an equivalent

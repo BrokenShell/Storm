@@ -83,8 +83,9 @@ or entropy state. Construction does not draw; each selection uses the supplied
 engine and returns only an index.
 
 Stateful wide-index schedules use the same ownership boundary. Construction
-prepares the permutation and distance distribution from a supplied engine, and
-each selection advances another explicitly supplied engine reference:
+prepares a Knuth-B permutation and distance distribution from a supplied
+engine, and each selection advances another explicitly supplied engine
+reference:
 
 ```cpp
 Storm::Generator generator{42};
