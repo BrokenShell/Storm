@@ -59,7 +59,7 @@ void test_version_and_types() {
     static_assert(!noexcept(Storm::roll_die(std::size_t{1})));
     static_assert(!noexcept(Storm::roll_dice(std::size_t{1}, std::size_t{1})));
     static_assert(!noexcept(Storm::ability_dice(std::size_t{3})));
-    STORM_CHECK(std::string_view{Storm::version} == "5.0.2");
+    STORM_CHECK(std::string_view{Storm::version} == "5.0.3");
 }
 
 void test_owned_and_injected_engines() {

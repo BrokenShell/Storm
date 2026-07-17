@@ -3,7 +3,7 @@
 All notable changes to Storm are documented here. Storm follows semantic
 versioning.
 
-## [5.0.3]
+## [5.0.3] - 2026-07-17
 
 ### Added
 

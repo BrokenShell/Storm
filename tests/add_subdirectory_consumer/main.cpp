@@ -4,7 +4,7 @@
 #include <string_view>
 
 auto main() -> int {
-    constexpr std::string_view expected_version{"5.0.2"};
+    constexpr std::string_view expected_version{"5.0.3"};
     Storm::Generator relative_generator{42};
     Storm::Generator cumulative_generator{42};
     const Storm::PreparedWeightedIndex relative{{1.0, 0.0, 3.0}};
