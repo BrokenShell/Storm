@@ -1,13 +1,20 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <bit>
+#include <cmath>
+#include <concepts>
 #include <cstddef>
 #include <cstdint>
+#include <initializer_list>
+#include <iterator>
 #include <limits>
 #include <random>
+#include <ranges>
 #include <stdexcept>
+#include <vector>
 
 namespace Storm {
 
@@ -101,6 +108,62 @@ inline auto canonical(engine_type& engine) noexcept -> double {
 }
 
 inline auto canonical() -> double { return canonical(thread_engine()); }
+
+class PreparedWeightedIndex {
+public:
+    explicit PreparedWeightedIndex(const std::initializer_list<double> weights) {
+        cumulative_.reserve(weights.size());
+        initialize(weights.begin(), weights.end());
+    }
+
+    template<std::ranges::input_range Range>
+        requires std::convertible_to<std::ranges::range_reference_t<Range>, double>
+    explicit PreparedWeightedIndex(Range&& weights) {
+        if constexpr (std::ranges::sized_range<Range>) {
+            cumulative_.reserve(static_cast<std::size_t>(std::ranges::size(weights)));
+        }
+        initialize(std::ranges::begin(weights), std::ranges::end(weights));
+    }
+
+    [[nodiscard]] auto operator()(engine_type& engine) const -> std::size_t {
+        std::uniform_real_distribution<double> distribution{0.0, total_};
+        const double draw = distribution(engine);
+        const double effective_draw = draw < total_ ? draw : maximum_draw_;
+        const auto selected = std::ranges::upper_bound(cumulative_, effective_draw);
+        return static_cast<std::size_t>(selected - cumulative_.begin());
+    }
+
+private:
+    template<std::input_iterator Iterator, std::sentinel_for<Iterator> Sentinel>
+        requires std::convertible_to<std::iter_reference_t<Iterator>, double>
+    void initialize(Iterator first, const Sentinel last) {
+        for (; first != last; ++first) {
+            const auto weight = static_cast<double>(*first);
+            if (!std::isfinite(weight) || weight < 0.0) {
+                throw std::invalid_argument{
+                    "PreparedWeightedIndex requires finite, nonnegative weights"};
+            }
+            if (weight > std::numeric_limits<double>::max() - total_) {
+                throw std::overflow_error{
+                    "PreparedWeightedIndex total weight is not representable"};
+            }
+            total_ += weight;
+            cumulative_.push_back(total_);
+        }
+        if (cumulative_.empty()) {
+            throw std::invalid_argument{"PreparedWeightedIndex requires at least one weight"};
+        }
+        if (total_ == 0.0) {
+            throw std::invalid_argument{
+                "PreparedWeightedIndex requires at least one positive weight"};
+        }
+        maximum_draw_ = std::nextafter(total_, 0.0);
+    }
+
+    std::vector<double> cumulative_;
+    double total_{0.0};
+    double maximum_draw_{0.0};
+};
 
 inline auto uniform_unsigned(engine_type& engine,
                              const std::uint64_t low,

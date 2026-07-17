@@ -10,6 +10,7 @@ function(storm_add_test target)
 endfunction()
 
 storm_add_test(storm.core_contracts core_contracts.cpp)
+storm_add_test(storm.prepared_weighted_index prepared_weighted_index.cpp)
 storm_add_test(storm.statistical_smoke statistical_smoke.cpp)
 storm_add_test(storm.version version.cpp)
 target_compile_definitions(

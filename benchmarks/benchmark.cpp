@@ -5,6 +5,7 @@
 #include <bit>
 #include <charconv>
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -12,9 +13,11 @@
 #include <iostream>
 #include <limits>
 #include <random>
+#include <string>
 #include <string_view>
 #include <system_error>
 #include <type_traits>
+#include <vector>
 
 namespace {
 
@@ -86,6 +89,73 @@ auto parse_iterations(const int argc, char* argv[]) -> std::size_t {
         return 0;
     }
     return static_cast<std::size_t>(parsed);
+}
+
+class LinearPreparedWeightedIndex {
+public:
+    explicit LinearPreparedWeightedIndex(const std::vector<double>& weights) {
+        double total = 0.0;
+        for (const double weight : weights) {
+            total += weight;
+            cumulative_.push_back(total);
+        }
+        total_ = total;
+        maximum_draw_ = std::nextafter(total_, 0.0);
+    }
+
+    auto operator()(Storm::engine_type& engine) const -> std::size_t {
+        std::uniform_real_distribution<double> distribution{0.0, total_};
+        const double draw = distribution(engine);
+        const double effective_draw = draw < total_ ? draw : maximum_draw_;
+        const auto selected = std::find_if(cumulative_.begin(), cumulative_.end(),
+                                           [effective_draw](const double boundary) {
+                                               return boundary > effective_draw;
+                                           });
+        return static_cast<std::size_t>(selected - cumulative_.begin());
+    }
+
+private:
+    std::vector<double> cumulative_;
+    double total_{0.0};
+    double maximum_draw_{0.0};
+};
+
+auto weighted_benchmark(const std::size_t size,
+                        const std::size_t iterations,
+                        const std::size_t warmup_iterations,
+                        std::uint64_t& warmup_checksum) -> std::uint64_t {
+    std::vector<double> weights;
+    weights.reserve(size);
+    for (std::size_t index = 0; index < size; ++index) {
+        const double weight =
+            index % 11U == 0U ? 0.0 : static_cast<double>((index % 7U) + 1U);
+        weights.push_back(weight);
+    }
+
+    const Storm::PreparedWeightedIndex prepared{weights};
+    Storm::Generator prepared_generator{seed};
+    auto prepared_draw = [&prepared, &prepared_generator] {
+        return prepared(prepared_generator.engine());
+    };
+    warmup_checksum ^= mix(warm_up(warmup_iterations, prepared_draw) +
+                           static_cast<std::uint64_t>(size));
+    const std::string prepared_label =
+        "PreparedWeightedIndex (" + std::to_string(size) + " entries)";
+    const auto prepared_checksum =
+        run_case(prepared_label, "draw", iterations, prepared_draw);
+
+    const LinearPreparedWeightedIndex linear{weights};
+    Storm::Generator linear_generator{seed};
+    auto linear_draw = [&linear, &linear_generator] {
+        return linear(linear_generator.engine());
+    };
+    warmup_checksum ^= mix(warm_up(warmup_iterations, linear_draw) +
+                           static_cast<std::uint64_t>(size * 2U));
+    const std::string linear_label =
+        "linear prepared reference (" + std::to_string(size) + " entries)";
+    const auto linear_checksum = run_case(linear_label, "draw", iterations, linear_draw);
+
+    return prepared_checksum ^ mix(linear_checksum + static_cast<std::uint64_t>(size));
 }
 
 }  // namespace
@@ -165,9 +235,15 @@ auto main(const int argc, char* argv[]) -> int {
         iterations,
         storm_ability);
 
+    std::uint64_t weighted_checksum = 0;
+    for (const std::size_t size : std::array<std::size_t, 3>{4U, 100U, 1'000U}) {
+        weighted_checksum ^=
+            weighted_benchmark(size, iterations, warmup_iterations, warmup_checksum);
+    }
+
     const auto combined_checksum = storm_index_checksum ^ standard_index_checksum ^
                                    storm_canonical_checksum ^ standard_canonical_checksum ^
-                                   storm_ability_checksum;
+                                   storm_ability_checksum ^ weighted_checksum;
     std::cout << "\nwarmup checksum=" << warmup_checksum
               << "\ncombined checksum=" << combined_checksum << '\n';
     return 0;
